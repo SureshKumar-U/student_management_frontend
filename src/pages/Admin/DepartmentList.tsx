@@ -4,6 +4,7 @@ import { getDepartmentListApi, DeleteDepartmentApi} from "../../services/AdminSe
 import { AuthContext } from "../../context/AuthContext";
 import DeletePopup from "../../components/Popup"
 import { toast } from "react-toastify/unstyled";
+
 interface Department {
   id: number;
   name: string;
@@ -90,9 +91,9 @@ const DepartmentList = () => {
 
             <tbody className="divide-y divide-gray-100">
 
-              {departments.map((department: Department, index) => (
+              {departments?.map((department: Department, index) => (
                 <tr
-                  key={department.id}
+                  key={department?.id}
                   className="hover:bg-gray-50"
                 >
                   <td className="px-6 py-4 text-gray-500">
@@ -100,18 +101,18 @@ const DepartmentList = () => {
                   </td>
 
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {department.name}
+                    {department?.name}
                   </td>
 
                   <td className="px-6 py-4 text-gray-500">
-                    {department.students.length}
+                    {department?.students.length}
                   </td>
 
                   <td className="px-6 py-4">
                     <div className="flex gap-3">
 
                       <Link
-                        to={`/admin/departments/edit/${department.id}`}
+                        to={`/admin/departments/edit/${department?.id}`}
                         className="text-blue-600 hover:text-blue-800 font-medium"
                       >
                         Edit
@@ -120,7 +121,7 @@ const DepartmentList = () => {
                       <button 
                       onClick={()=>{
                           setShowDelete(true)
-                        setSelectedDepartmentId(department.id)}}
+                        setSelectedDepartmentId(department?.id)}}
                       className="text-red-600 hover:text-red-800 font-medium">
                         Delete
                       </button>

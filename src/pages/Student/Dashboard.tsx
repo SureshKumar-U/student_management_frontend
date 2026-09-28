@@ -6,35 +6,23 @@ const Dashboard = () => {
 
   const auth = useContext(AuthContext);
   const [data,setData] = useState<any>({})
-  const courses = [
-    {
-      code: "CS101",
-      name: "Programming",
-    },
-    {
-      code: "CS102",
-      name: "Database Management",
-    },
-    {
-      code: "CS103",
-      name: "Web Development",
-    },
-  ];
+
 
 
   useEffect(()=>{
-    if(!auth) return
+    if(!auth?.user) return
+    
     getStudentByIdApi(auth?.user?.token!,auth?.user?.id!).
     then(res=>setData(res.data))
   },[auth])
-
+  
   return (
     <div className="space-y-8">
 
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          Welcome, John!
+          Welcome, {auth?.user?.name!}!
         </h1>
 
         <p className="mt-1 text-sm text-gray-500">
@@ -115,20 +103,20 @@ const Dashboard = () => {
 
             <tbody className="divide-y divide-gray-100">
               
-              {data?.enrollments?.map((course) => (
+              {data?.enrollments?.map((e) => (
                 <tr
-                  key={course.code}
+                  key={e?.course?.code}
                   className="hover:bg-gray-50"
                 >
 
                   <td className="px-6 py-4">
                     <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">
-                      {course.code}
+                      {e?.course?.code}
                     </span>
                   </td>
 
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {course.name}
+                    {e?.course.name}
                   </td>
 
                 </tr>

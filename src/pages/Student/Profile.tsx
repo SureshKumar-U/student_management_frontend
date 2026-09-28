@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { getStudentByIdApi } from "../../services/StudentService";
+import { getStudentByIdApi,UpdateStudentApi } from "../../services/StudentService";
 import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 interface StudentProfile {
   studentId: string;
@@ -55,12 +56,17 @@ const Profile = () => {
 
 
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log(profile);
-
-    // PUT /api/students/profile
+   
+     try{
+      const res = await UpdateStudentApi(auth?.user?.token!,profile,profile.studentId)
+      toast.success(res.message)
+     }
+     catch(err:any){
+      toast.error(err.message)
+     }
 
     setIsEditing(false);
   };

@@ -1,3 +1,8 @@
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { getAllMyCoursesApi } from "../../services/StudentService";
+import { useNavigate } from "react-router-dom";
+
 interface Course {
   id: number;
   code: string;
@@ -7,26 +12,58 @@ interface Course {
 
 const MyCourses = () => {
 
-  const courses: Course[] = [
+  const auth = useContext(AuthContext);
+
+  const [courses,setCourses] = useState<Course[]>([]);
+  const navigate = useNavigate();
+  // const courses: Course[] = [
+  //   {
+  //     id: 1,
+  //     code: "CS101",
+  //     name: "Programming",
+  //     department: "Computer Science",
+  //   },
+  //   {
+  //     id: 2,
+  //     code: "CS102",
+  //     name: "Database Management",
+  //     department: "Computer Science",
+  //   },
+  //   {
+  //     id: 3,
+  //     code: "CS103",
+  //     name: "Web Development",
+  //     department: "Computer Science",
+  //   },
+  // ];
+
+
+  useEffect(()=>{
+    getAllMyCoursesApi(auth?.user?.token!, auth?.user?.id! )
+    .then(res=> 
     {
-      id: 1,
-      code: "CS101",
-      name: "Programming",
-      department: "Computer Science",
-    },
-    {
-      id: 2,
-      code: "CS102",
-      name: "Database Management",
-      department: "Computer Science",
-    },
-    {
-      id: 3,
-      code: "CS103",
-      name: "Web Development",
-      department: "Computer Science",
-    },
-  ];
+      if(res?.data?.length == 0){
+        return
+      }
+      const courses = res?.data?.map((c:any)=>{
+        console.log(c)
+           const course :Course = {
+            id:c.id,
+            name:c.name,
+            code:c.code,
+            department:c.department.name
+           }
+         return course
+      })
+      setCourses(courses)
+
+    }
+
+    )
+
+  },[auth])
+
+
 
   return (
     <div className="space-y-6">
@@ -41,6 +78,15 @@ const MyCourses = () => {
           Courses you are currently enrolled in.
         </p>
       </div>
+        <button
+          onClick={() => navigate("add-course")}
+          className="px-4 py-2 rounded-lg bg-blue-600 text-white
+                     font-medium hover:bg-blue-700 transition"
+        >
+          + Add Course
+        </button>
+
+
 
       {/* Course count */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">

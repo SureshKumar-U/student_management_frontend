@@ -35,7 +35,6 @@ const Dashboard = () => {
   useEffect(()=>{
     getAdminDashboardStats(auth?.user?.token!).
     then(res=>{
-        console.log(res.data)
       setDashboardStats(res.data)
   })
   },[])

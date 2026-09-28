@@ -1,7 +1,10 @@
+import { useContext, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 
 const AdminLayout = () => {
   const location = useLocation();
+  const auth = useContext(AuthContext);
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Students", path: "/admin/students" },
@@ -49,6 +52,7 @@ const AdminLayout = () => {
         {/* Logout */}
         <div className="p-4 border-t border-slate-700">
           <button
+          onClick={auth?.logout}
            className="w-full px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-red-600 hover:text-white transition">
             Logout
           </button>

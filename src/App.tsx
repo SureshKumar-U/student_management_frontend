@@ -28,11 +28,12 @@ import SignUpPage from "./pages/SignUp";
 import { ToastContainer } from "react-toastify";
 import CourseEdit from "./pages/Admin/UpdateCourseForm";
 import EditDepartmentForm from "./pages/Admin/UpdateDepartment";
+import AddCourse from "./pages/Student/AddCourse";
 
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <ToastContainer />
       <Routes>
         <Route path="/" element={<SigninPage />} />
@@ -54,7 +55,7 @@ function App() {
             path="students/create"
             element={<StudentForm />}
           />
-          
+
           <Route
             path="/admin/courses/edit/:id"
             element={<CourseEdit />}
@@ -78,7 +79,7 @@ function App() {
 
           <Route
             path="departments/edit/:id"
-            element={<EditDepartmentForm/>}
+            element={<EditDepartmentForm />}
           />
           <Route
             path="courses"
@@ -113,6 +114,10 @@ function App() {
             path="courses"
             element={<MyCourses />}
           />
+          <Route
+            path="courses/add-course"
+            element={<AddCourse />}
+          />
 
         </Route>
 
@@ -141,7 +146,7 @@ function App() {
         </Route>
       </Routes>
 
-    </BrowserRouter>
+    </>
   );
 }
 

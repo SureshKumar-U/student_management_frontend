@@ -8,6 +8,7 @@ export const AuthContext = createContext<IAuthContext | null>(null);
 export const AuthProvider = ({children}: {children: ReactNode}) => {
     const [user, setUser] = useState<User | null>(null)
 
+    const navigate = useNavigate();
 
     
 
@@ -19,6 +20,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     const logout = () => {
         setUser(null)
         localStorage.removeItem("user")
+        navigate('/')
      
     }
 

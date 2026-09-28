@@ -96,11 +96,11 @@ const StudentLayout = () => {
           <div className="flex items-center gap-3">
 
             <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
-              J
+              {user?.name ? user?.name?.charAt(0) : "A"}
             </div>
 
             <span className="text-sm font-medium text-gray-700">
-              John Smith
+              {user?.name!}
             </span>
 
           </div>
