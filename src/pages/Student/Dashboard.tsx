@@ -15,6 +15,8 @@ const Dashboard = () => {
     getStudentByIdApi(auth?.user?.token!,auth?.user?.id!).
     then(res=>setData(res.data))
   },[auth])
+
+
   
   return (
     <div className="space-y-8">
@@ -103,7 +105,7 @@ const Dashboard = () => {
 
             <tbody className="divide-y divide-gray-100">
               
-              {data?.enrollments?.map((e) => (
+              {data?.enrollments?.map((e:any) => (
                 <tr
                   key={e?.course?.code}
                   className="hover:bg-gray-50"

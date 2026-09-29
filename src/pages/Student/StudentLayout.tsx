@@ -8,12 +8,7 @@ const StudentLayout = () => {
 
   const {user, logout} = useContext(AuthContext)!
 
-  useEffect(()=>{
-    if(!user){
-        navigate('/')
-    }
 
-  },[])
 
   const menuItems = [
     {

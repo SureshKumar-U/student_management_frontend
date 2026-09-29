@@ -9,7 +9,6 @@ interface Department {
   id: number;
   name: string;
   students: [];
-  // studentCount: number;
 }
 
 const DepartmentList = () => {
@@ -19,10 +18,13 @@ const DepartmentList = () => {
   const [departments, setDepartments] = useState([])
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number|null>(null)
 
+
   useEffect(() => {
+
     getDepartmentListApi(auth?.user?.token!)
       .then(res => setDepartments(res.data))
   }, [])
+
 
     const handleDelete = async () => {
       try {

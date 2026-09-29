@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../context/AuthContext";
 import { addCourseToStudentApi, getAllCoursesApi } from "../../services/StudentService";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Course {
     id: number;
@@ -11,7 +12,7 @@ interface Course {
 const AddCourse = () => {
     const [selectedCourseId, setSelectedCourseId] = useState("");
     const auth = useContext(AuthContext)
-
+    const navigate = useNavigate();
     const [courses, setCources] = useState<Course[]>([]);
 
     useEffect(() => {
@@ -47,12 +48,14 @@ const AddCourse = () => {
             userId: auth?.user?.id,
             courseId: selectedCourseId
         }
-        console.log(payload)
+
         try {
             const res: any = await addCourseToStudentApi(auth?.user?.token!, payload)
             toast.success(res.message);
+            navigate("/student/courses")
         } catch (err: any) {
             toast.error(err.message);
+
 
         } finally {
             setSelectedCourseId("")

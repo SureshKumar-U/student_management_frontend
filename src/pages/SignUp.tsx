@@ -48,9 +48,7 @@ const SignUpPage = () => {
     try {
       const resposne = await SignUpApi(auth)
       toast.success(resposne.message);
-      navigate('/signin')
-
-
+      navigate('/')
 
 
     }

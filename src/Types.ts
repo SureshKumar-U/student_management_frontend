@@ -29,10 +29,11 @@ export interface DeletePopupProps {
 }
 
 export interface User{
-  id:number;
+  id:number | string;
   token:string;
   name:string;
   email:string;
+  role:Roles;
 }
 
 export interface IAuthContext{

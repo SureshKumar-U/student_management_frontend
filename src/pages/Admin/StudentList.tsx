@@ -74,7 +74,7 @@ const StudentList = () => {
         >
           + Add Student
         </Link> */}
-
+      
       </div>
 
       {/* Search */}
