@@ -4,7 +4,7 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import Dashboard from "./pages/Admin/Dashboard";
 
 import StudentList from "./pages/Admin/StudentList";
-import StudentForm from "./pages/Admin/StudentForm";
+import StudentForm from "./pages/Admin/UpdateStudentForm";
 
 import DepartmentList from "./pages/Admin/DepartmentList";
 import CourseList from "./pages/Admin/CourseList";
@@ -17,19 +17,13 @@ import StudentDashboard from "./pages/Student/Dashboard";
 import StudentProfile from "./pages/Student/Profile";
 import MyCourses from "./pages/Student/Mycourses";
 
-
-import TeacherLayout from "./pages/Teacher/TeacherLayout";
-import TeacherDashboard from "./pages/Teacher/Dashboard";
-import TeacherCourses from "./pages/Teacher/Mycourses";
-import TeacherStudents from "./pages/Teacher/Students";
-import TeacherProfile from "./pages/Teacher/Profile";
 import SigninPage from "./pages/Signin";
 import SignUpPage from "./pages/SignUp";
 import { ToastContainer } from "react-toastify";
 import CourseEdit from "./pages/Admin/UpdateCourseForm";
 import EditDepartmentForm from "./pages/Admin/UpdateDepartment";
 import AddCourse from "./pages/Student/AddCourse";
-
+import UpdateStudentForm from "./pages/Admin/UpdateStudentForm";
 
 function App() {
   return (
@@ -52,8 +46,8 @@ function App() {
           />
 
           <Route
-            path="students/create"
-            element={<StudentForm />}
+            path="students/edit/:id"
+            element={<UpdateStudentForm />}
           />
 
           <Route
@@ -95,6 +89,7 @@ function App() {
             path="users"
             element={<UserList />}
           />
+          
 
         </Route>
 
@@ -121,29 +116,6 @@ function App() {
 
         </Route>
 
-        <Route path="/teacher" element={<TeacherLayout />}>
-
-          <Route
-            path="dashboard"
-            element={<TeacherDashboard />}
-          />
-
-          <Route
-            path="courses"
-            element={<TeacherCourses />}
-          />
-
-          <Route
-            path="students"
-            element={<TeacherStudents />}
-          />
-
-          <Route
-            path="profile"
-            element={<TeacherProfile />}
-          />
-
-        </Route>
       </Routes>
 
     </>

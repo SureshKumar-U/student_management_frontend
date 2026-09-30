@@ -17,7 +17,7 @@ const Profile = () => {
     studentId: "",
     name: "",
     email: "",
-    department: "Computer Science",
+    department: "",
   });
   const auth = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);

@@ -20,6 +20,25 @@ export const getStudentByIdApi = async (token: string,userId:number): Promise<an
 
 
 }
+export const getStudentApi = async (token: string,studentId:string): Promise<any> => {
+    const response = await fetch(`${BASEAPI_URL}/students/student/${studentId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+
+        }
+    })
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Request failed');
+    }
+
+    return await response.json();
+
+
+}
 
 
 

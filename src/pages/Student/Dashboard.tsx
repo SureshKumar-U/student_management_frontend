@@ -42,8 +42,8 @@ const Dashboard = () => {
             Student ID
           </p>
 
-          <p className="mt-2 text-2xl font-bold text-gray-900">
-            {data.rollNumber!}
+          <p className="mt-2 text-xs font-bold text-gray-900">
+            {data?.id!}
           </p>
 
         </div>
@@ -56,7 +56,7 @@ const Dashboard = () => {
           </p>
 
           <p className="mt-2 text-xl font-bold text-gray-900">
-            {data?.department?.name}
+            {data?.department?.name || "NA"}
           </p>
 
         </div>

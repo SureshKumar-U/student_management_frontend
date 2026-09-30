@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getDepartmentListApi, DeleteDepartmentApi} from "../../services/AdminService";
+import { getDepartmentListApi, DeleteDepartmentApi } from "../../services/AdminService";
 import { AuthContext } from "../../context/AuthContext";
 import DeletePopup from "../../components/Popup"
-import { toast } from "react-toastify/unstyled";
+import { toast } from "react-toastify";
 
 interface Department {
   id: number;
@@ -16,30 +16,33 @@ const DepartmentList = () => {
   const auth = useContext(AuthContext);
   const [showDelete, setShowDelete] = useState(false);
   const [departments, setDepartments] = useState([])
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number|null>(null)
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null)
 
 
   useEffect(() => {
-
+    if (!auth?.user!) return
     getDepartmentListApi(auth?.user?.token!)
       .then(res => setDepartments(res.data))
-  }, [])
+  }, [auth])
 
 
-    const handleDelete = async () => {
-      try {
-        const res =await DeleteDepartmentApi(auth?.user?.token!, selectedDepartmentId!)
-        toast.success(res.message)
-  
-      } catch (err: any) {
-        toast.error(err?.message!)
-      }
-      finally{
-           setShowDelete(false);
-           setSelectedDepartmentId(null);
-      }
-  
-    };
+  const handleDelete = async () => {
+
+    try {
+      const res = await DeleteDepartmentApi(auth?.user?.token!, selectedDepartmentId!)
+      toast.success(res?.message)
+      const getDepartmentResponse = await getDepartmentListApi(auth?.user?.token!)
+      setDepartments(getDepartmentResponse.data)
+
+    } catch (err: any) {
+      toast.error(err?.message!)
+    }
+    finally {
+      setShowDelete(false);
+      setSelectedDepartmentId(null);
+    }
+
+  };
 
   return (
     <div className="space-y-6">
@@ -82,17 +85,18 @@ const DepartmentList = () => {
                 </th>
 
                 <th className="px-6 py-4 font-semibold text-gray-600">
-                  Students
-                </th>
-
-                <th className="px-6 py-4 font-semibold text-gray-600">
                   Actions
                 </th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-
+              {!departments?.length &&
+                <tr>
+                  <td colSpan={3} className=" text-center py-4">
+                    No department created yet
+                  </td>
+                </tr>}
               {departments?.map((department: Department, index) => (
                 <tr
                   key={department?.id}
@@ -106,9 +110,6 @@ const DepartmentList = () => {
                     {department?.name}
                   </td>
 
-                  <td className="px-6 py-4 text-gray-500">
-                    {department?.students.length}
-                  </td>
 
                   <td className="px-6 py-4">
                     <div className="flex gap-3">
@@ -120,11 +121,12 @@ const DepartmentList = () => {
                         Edit
                       </Link>
 
-                      <button 
-                      onClick={()=>{
+                      <button
+                        onClick={() => {
                           setShowDelete(true)
-                        setSelectedDepartmentId(department?.id)}}
-                      className="text-red-600 hover:text-red-800 font-medium">
+                          setSelectedDepartmentId(department?.id)
+                        }}
+                        className="text-red-600 hover:text-red-800 font-medium">
                         Delete
                       </button>
 

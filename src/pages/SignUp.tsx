@@ -50,7 +50,6 @@ const SignUpPage = () => {
       toast.success(resposne.message);
       navigate('/')
 
-
     }
     catch (err: any) {
       toast.error(err.message)

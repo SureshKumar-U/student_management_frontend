@@ -17,20 +17,20 @@ const CourseList = () => {
 
   const [courses, setCourses] = useState<ICourse[]>([]);
   const [showDelete, setShowDelete] = useState(false);
-  const [selectedCourseId,setSelectedCourseId]  = useState<number | null>(null)
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null)
   const auth = useContext(AuthContext)
 
   const handleDelete = async () => {
     try {
-      const res =await DeleteCourseApi(auth?.user?.token!, selectedCourseId!)
+      const res = await DeleteCourseApi(auth?.user?.token!, selectedCourseId!)
       toast.success(res.message)
 
     } catch (err: any) {
       toast.error(err?.message!)
     }
-    finally{
-         setShowDelete(false);
-         setSelectedCourseId(null);
+    finally {
+      setShowDelete(false);
+      setSelectedCourseId(null);
     }
 
   };
@@ -38,32 +38,14 @@ const CourseList = () => {
 
 
 
-  // const courses: Course[] = [
-  //   {
-  //     id: 1,
-  //     code: "CS101",
-  //     name: "Programming",
-  //     department: "Computer Science",
-  //   },
-  //   {
-  //     id: 2,
-  //     code: "CS102",
-  //     name: "Database Management",
-  //     department: "Computer Science",
-  //   },
-  //   {
-  //     id: 3,
-  //     code: "MA101",
-  //     name: "Mathematics",
-  //     department: "Mathematics",
-  //   },
-  // ];
 
   useEffect(() => {
+    if (!auth) return
+
 
     GetAllCoursesApi(auth?.user?.token!).then(res => setCourses(res.data))
 
-  }, [])
+  }, [auth])
 
   return (
     <div className="space-y-6">
@@ -118,8 +100,13 @@ const CourseList = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-
-              {courses.map((course) => (
+              {!courses?.length &&
+                <tr>
+                  <td colSpan={4} className=" text-center py-4">
+                    No Courses created yet
+                  </td>
+                </tr>}
+              {courses?.map((course) => (
                 <tr
                   key={course.id}
                   className="hover:bg-gray-50"

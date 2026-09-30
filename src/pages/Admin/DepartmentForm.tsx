@@ -2,11 +2,12 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { CreateDepartmentApi } from "../../services/AdminService";
 import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 
-interface formData{
-  name:string;
-  code:string
+interface formData {
+  name: string;
+  code: string
 }
 const DepartmentForm = () => {
 
@@ -14,20 +15,20 @@ const DepartmentForm = () => {
 
   const auth = useContext(AuthContext);
 
-  const [formData, setFormData] = useState<formData>({name:"",code:""});
+  const [formData, setFormData] = useState<formData>({ name: "", code: "" });
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log({
-      formData
-    });
-    await CreateDepartmentApi(auth?.user?.token!,formData)
+    try {
+      const response = await CreateDepartmentApi(auth?.user?.token!, formData)
+      toast.success(response?.message);
+      navigate("/admin/departments")
+    } catch (err: any) {
+      toast.error(err?.message)
+    };
+  }
 
-    // POST /api/departments
-
-    navigate("/admin/departments");
-  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -57,7 +58,7 @@ const DepartmentForm = () => {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name:e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter department name"
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
@@ -72,7 +73,7 @@ const DepartmentForm = () => {
             <input
               type="text"
               value={formData.code}
-              onChange={(e) => setFormData({...formData,code:e.target.value})}
+              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
               placeholder="Enter Code"
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"

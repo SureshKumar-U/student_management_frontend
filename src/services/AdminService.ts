@@ -21,6 +21,27 @@ export const GetAllCoursesApi = async (token: string): Promise<any> => {
 }
 
 
+export const deleteStudentById = async (token: string, studentId:number): Promise<any> => {
+    const response = await fetch(`${BASEAPI_URL}/students/${studentId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    })
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Request failed');
+    }
+
+    return await response.json();
+
+
+}
+
+
+
 export const getAllStudents = async (token: string): Promise<any> => {
     const response = await fetch(`${BASEAPI_URL}/students`, {
         method: "GET",
@@ -122,6 +143,25 @@ export const getAdminDashboardStats = async (token: string): Promise<any> => {
 
     return await response.json();
 }
+
+export const getRecentStudentsApi = async (token: string): Promise<any> => {
+    const response = await fetch(`${BASEAPI_URL}/students/recent`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+
+        }
+    })
+    if (!response.ok) {
+        const errorData = await response.json();
+
+        throw new Error(errorData.message || 'Request failed');
+    }
+
+    return await response.json();
+}
+
 
 
 

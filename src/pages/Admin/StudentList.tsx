@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllStudents } from "../../services/AdminService";
+import { deleteStudentById, getAllStudents } from "../../services/AdminService";
 import { AuthContext } from "../../context/AuthContext";
+import DeletePopup from "../../components/Popup";
+import { toast } from "react-toastify";
 
 interface Student {
   id: number;
@@ -14,44 +16,40 @@ const StudentList = () => {
 
   const [students, setStudents] = useState<Student[]>([])
   const auth = useContext(AuthContext);
-
-  // const students: Student[] = [
-  //   {
-  //     id: 1,
-  //     name: "John Smith",
-  //     email: "john@gmail.com",
-  //     department: "Computer Science",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "David Kumar",
-  //     email: "david@gmail.com",
-  //     department: "Mathematics",
-  //   },
-  // ];
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null)
 
   useEffect(() => {
+    if (!auth?.user?.token) return;
     getAllStudents(auth?.user?.token!).then(res => {
-
       const students: Student[] = []
-
-      res.data.forEach((st: any) => {
-        console.log(st)
+      res?.data?.forEach((st: any) => {
         const student: Student = {
           id: st.id,
           name: st.user.name,
           email: st.user.email,
-          department: st.department.name,
+          department: st?.department?.name,
         }
         students.push(student);
 
       })
-
-
       setStudents(students)
     })
-  }, [])
+  }, [auth])
 
+
+  const handleDelete = async () => {
+    try {
+      const res = await deleteStudentById(auth?.user?.token!, selectedStudentId!);
+      toast.success(res.message);
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setShowDelete(false);
+      setSelectedStudentId(null);
+    }
+
+  }
   return (
     <div className="space-y-6">
 
@@ -68,13 +66,6 @@ const StudentList = () => {
           </p>
         </div>
 
-        {/* <Link
-          to="/admin/students/create"
-          className="px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition"
-        >
-          + Add Student
-        </Link> */}
-      
       </div>
 
       {/* Search */}
@@ -100,7 +91,7 @@ const StudentList = () => {
               <tr>
                 <th className="px-6 py-4 font-semibold">
                   ID
-                </th> 
+                </th>
 
                 <th className="px-6 py-4 font-semibold">
                   Name
@@ -114,16 +105,22 @@ const StudentList = () => {
                   Department
                 </th>
 
-                {/* <th className="px-6 py-4 font-semibold">
+                <th className="px-6 py-4 font-semibold">
                   Actions
-                </th> */}
+                </th>
               </tr>
 
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-
-              {students.map((student) => (
+              {!students?.length &&
+                <tr>
+                  <td colSpan={5} className=" text-center py-4">
+                    No Students created yet
+                  </td>
+                </tr>
+              }
+              {students?.map((student) => (
                 <tr
                   key={student.id}
                   className="hover:bg-gray-50 transition"
@@ -142,28 +139,27 @@ const StudentList = () => {
                   </td>
 
                   <td className="px-6 py-4 text-gray-500">
-                    {student.department}
+                    {student.department || "NA"}
                   </td>
 
-                  {/* <td className="px-6 py-4">
+                  <td className="px-6 py-4">
 
                     <div className="flex items-center gap-3">
 
-                      <Link
-                        to={`/admin/students/${student.id}`}
-                        className="text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        View
-                      </Link>
 
                       <Link
-                        to={`/admin/students/${student.id}/edit`}
+                        to={`edit/${student.id}`}
                         className="text-green-600 hover:text-green-800 font-medium"
                       >
                         Edit
                       </Link>
 
                       <button
+                        onClick={() => {
+                          setShowDelete(true);
+                          setSelectedStudentId(student.id)
+
+                        }}
                         className="text-red-600 hover:text-red-800 font-medium"
                       >
                         Delete
@@ -171,7 +167,7 @@ const StudentList = () => {
 
                     </div>
 
-                  </td> */}
+                  </td>
 
                 </tr>
               ))}
@@ -181,8 +177,13 @@ const StudentList = () => {
           </table>
 
         </div>
-
-      </div>
+        <DeletePopup
+          open={showDelete}
+          title="Delete User"
+          message="Are you sure you want to delete this user? This action cannot be undone."
+          onClose={() => setShowDelete(false)}
+          onConfirm={() => handleDelete()}
+        />      </div>
 
     </div>
   );

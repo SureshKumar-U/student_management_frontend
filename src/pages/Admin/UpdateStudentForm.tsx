@@ -1,43 +1,94 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { getDepartmentListApi } from "../../services/AdminService";
+import { getStudentApi, UpdateStudentApi } from "../../services/StudentService";
+import { toast } from "react-toastify";
 
-interface StudentFormData {
+interface IStudentFormData {
+  id: string,
   name: string;
   email: string;
   phone: string;
   departmentId: number;
 }
 
-const StudentForm = () => {
-  const navigate = useNavigate();
+interface IDepartment {
+  id: string;
+  name: string;
+}
 
-  const [formData, setFormData] = useState<StudentFormData>({
+const UpdateStudentForm = () => {
+  const navigate = useNavigate();
+  const [departments, setDepartments] = useState<IDepartment[]>([])
+  const auth = useContext(AuthContext);
+  const { id } = useParams();
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null)
+
+  const [formData, setFormData] = useState<IStudentFormData>({
+    id: "",
     name: "",
     email: "",
     phone: "",
     departmentId: 0,
   });
 
+
+  useEffect(() => {
+    if (!auth?.user) return;
+    getDepartmentListApi(auth?.user?.token!)
+      .then(res => {
+        console.log(res)
+        if (res?.data.length == 0) return
+        const _departments: IDepartment[] = res.data.map((d: any) => {
+          return {
+            id: d.id,
+            name: d.name,
+          }
+        })
+
+        setDepartments(_departments)
+      })
+
+    getStudentApi(auth?.user?.token!, id!).
+      then(res => {
+        if (!res.data) return;
+        setFormData({
+          ...formData,
+          name: res.data.user.name,
+          email: res.data.user.email,
+          id: res.data.id,
+          departmentId: res.data.departmentId
+
+        })
+      }
+      ).
+      catch(err => console.log(err.message))
+
+  }, [auth])
+
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "departmentId" ? Number(value) : value,
+      [name]:  value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log(formData);
-
-    // API call here
-    // POST /api/students
-
+    try{
+    const res:any = await UpdateStudentApi(auth?.user?.token!, formData,formData.id)
+    toast.success(res.message);
     navigate("/admin/students");
+    }catch(err:any){
+      toast.error(err.message)
+    }
+
   };
 
   return (
@@ -53,12 +104,9 @@ const StudentForm = () => {
         </Link>
 
         <h1 className="mt-3 text-2xl font-bold text-gray-900">
-          Add Student
+          Edit Student
         </h1>
 
-        <p className="mt-1 text-sm text-gray-500">
-          Add a new student to the system.
-        </p>
       </div>
 
       {/* Form */}
@@ -100,22 +148,6 @@ const StudentForm = () => {
             />
           </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone
-            </label>
-
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter phone number"
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
           {/* Department */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -129,23 +161,23 @@ const StudentForm = () => {
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value={0}>Select Department</option>
-              <option value={1}>Computer Science</option>
-              <option value={2}>Mathematics</option>
-              <option value={3}>Physics</option>
+              <option value={"0"}>Select Department</option>
+
+              {departments?.map((d: IDepartment) => {
+                return (
+                  <option value={d.id}>{d.name}</option>
+                )
+              })}
             </select>
           </div>
-
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t">
-
             <Link
               to="/admin/students"
               className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
               Cancel
             </Link>
-
             <button
               type="submit"
               className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -163,4 +195,4 @@ const StudentForm = () => {
   );
 };
 
-export default StudentForm;
+export default UpdateStudentForm;

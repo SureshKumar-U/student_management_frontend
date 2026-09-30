@@ -1,7 +1,5 @@
 import type { ILogin, ISignUp, } from "../Types";
 
-
-
 const BASEAPI_URL = 'http://localhost:5180/api/v1'
 
 export const LoginApi = async (data: ILogin):Promise<any>  => {
@@ -34,12 +32,10 @@ export const SignUpApi = async (data: ISignUp):Promise<any> => {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Signup failed');
     }
-
     return await response.json();
 
 
 }
-
 
 export const GetAllUsers = async ():Promise<any> => {
     const response = await fetch(`${BASEAPI_URL}/auth/users`, {

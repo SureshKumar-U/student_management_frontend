@@ -20,11 +20,12 @@ const CourseForm = () => {
 
 
   useEffect(() => {
+    if(!auth) return
     GetAllDepartmentsApi(auth?.user?.token!).then(res => {
       setDepartments(res.data)
     })
 
-  }, [])
+  }, [auth])
 
 
 
