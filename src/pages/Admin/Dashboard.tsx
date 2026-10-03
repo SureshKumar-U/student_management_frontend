@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { getAdminDashboardStats, getRecentStudentsApi } from "../../services/AdminService";
 
-
 interface IRecentStudent {
   email: string,
   department: string,
@@ -11,17 +10,18 @@ interface IRecentStudent {
 const Dashboard = () => {
 
   const auth = useContext(AuthContext);
-  const [dashboardStats, setDashboardStats] = useState({});
+  const token = auth?.user?.token
+  const [dashboardStats, setDashboardStats] = useState<Record<string, string | number>>({});
   const [recentStudents, setRecentStudents] = useState<IRecentStudent[]>([]);
 
   useEffect(() => {
-    if (!auth?.user?.token!) return
-    getAdminDashboardStats(auth?.user?.token!).
+    if (!token) return
+    getAdminDashboardStats(token).
       then(res => {
         setDashboardStats(res.data)
       })
 
-    getRecentStudentsApi(auth?.user?.token!).then(
+    getRecentStudentsApi(token).then(
       (res: any) => {
   
         if (res?.data?.length > 0) {
@@ -31,19 +31,12 @@ const Dashboard = () => {
               email: st.user.email,
               name:st.user.name
             }
-
-
           })
           setRecentStudents(students)
         }
-
-
-
-
       }
     )
-  }, [auth])
-
+  }, [token]);
 
   return (
     <div className="space-y-8">
@@ -51,38 +44,31 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold text-gray-900">
           Dashboard
         </h1>
-
         <p className="mt-1 text-sm text-gray-500">
           Welcome back, Admin.
         </p>
       </div>
-
       {/* Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
         {Object.entries(dashboardStats)?.map(([item, val]: any) => (
           <div
             key={item}
             className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
-
               <div>
                 <p className="text-sm font-medium text-gray-500">
                   {item}
                 </p>
-
                 <p className="mt-2 text-xl font-bold text-gray-900">
                   {val}
                 </p>
               </div>
-
               <div
                 className={`w-12 h-12 rounded-lg  bg-blue-600 flex items-center justify-center text-white`}
               >
                 {item.charAt(0)}
               </div>
-
             </div>
           </div>
         ))}
@@ -97,21 +83,16 @@ const Dashboard = () => {
             Recent Students
           </h2>
         </div>
-
         <div className="overflow-x-auto">
-
           <table className="w-full text-sm text-left">
-
             <thead className="bg-gray-50 text-gray-600">
               <tr>
                 <th className="px-6 py-4 font-medium">
                   Name
                 </th>
-
                 <th className="px-6 py-4 font-medium">
                   Email
                 </th>
-
                 <th className="px-6 py-4 font-medium">
                   Department
                 </th>
@@ -126,40 +107,29 @@ const Dashboard = () => {
                   </td>
                 </tr>}
               {recentStudents?.length > 0 && <>
-                {recentStudents.map(st=>{
+                {recentStudents.map((st: any,index:number) => {
                   return (
-                <tr className="hover:bg-gray-50">
+                <tr key={index} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {st.name}
+                    {st?.name}
                   </td>
 
                   <td className="px-6 py-4 text-gray-500">
-                    {st.email}
+                    {st?.email}
                   </td>
 
                   <td className="px-6 py-4 text-gray-500">
-                    {st.department || "NA"}
+                    {st?.department || "NA"}
                   </td>
                 </tr>
                   )
                 })}
-
                 </>
-
               }
-
-
-
-
-
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </div>
   );
 };

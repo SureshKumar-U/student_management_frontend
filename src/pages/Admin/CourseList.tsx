@@ -49,34 +49,25 @@ const CourseList = () => {
 
   return (
     <div className="space-y-6">
-
       <div className="flex items-center justify-between">
-
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             Courses
           </h1>
-
           <p className="mt-1 text-sm text-gray-500">
             Manage courses.
           </p>
         </div>
-
         <Link
           to="/admin/courses/create"
           className="px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
         >
           + Add Course
         </Link>
-
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-
         <div className="overflow-x-auto">
-
           <table className="w-full text-sm text-left">
-
             <thead className="bg-gray-50 border-b">
 
               <tr>
@@ -98,7 +89,6 @@ const CourseList = () => {
               </tr>
 
             </thead>
-
             <tbody className="divide-y divide-gray-100">
               {!courses?.length &&
                 <tr>
@@ -145,13 +135,6 @@ const CourseList = () => {
                       >
                         Delete
                       </button>
-                      <DeletePopup
-                        open={showDelete}
-                        title="Delete User"
-                        message="Are you sure you want to delete this user? This action cannot be undone."
-                        onClose={() => setShowDelete(false)}
-                        onConfirm={() => handleDelete()}
-                      />
 
                     </div>
 
@@ -159,15 +142,17 @@ const CourseList = () => {
 
                 </tr>
               ))}
-
+              <DeletePopup
+                open={showDelete}
+                title="Delete Course"
+                message="Are you sure you want to delete this course? This action cannot be undone."
+                onClose={() => setShowDelete(false)}
+                onConfirm={() => handleDelete()}
+              />
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </div>
   );
 };

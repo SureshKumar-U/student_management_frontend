@@ -23,8 +23,6 @@ const UpdateStudentForm = () => {
   const [departments, setDepartments] = useState<IDepartment[]>([])
   const auth = useContext(AuthContext);
   const { id } = useParams();
-  const [showDelete, setShowDelete] = useState(false);
-  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null)
 
   const [formData, setFormData] = useState<IStudentFormData>({
     id: "",
@@ -47,10 +45,8 @@ const UpdateStudentForm = () => {
             name: d.name,
           }
         })
-
         setDepartments(_departments)
       })
-
     getStudentApi(auth?.user?.token!, id!).
       then(res => {
         if (!res.data) return;
@@ -67,7 +63,6 @@ const UpdateStudentForm = () => {
       catch(err => console.log(err.message))
 
   }, [auth])
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -88,12 +83,10 @@ const UpdateStudentForm = () => {
     }catch(err:any){
       toast.error(err.message)
     }
-
   };
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-
       {/* Header */}
       <div>
         <Link
@@ -106,20 +99,15 @@ const UpdateStudentForm = () => {
         <h1 className="mt-3 text-2xl font-bold text-gray-900">
           Edit Student
         </h1>
-
       </div>
-
       {/* Form */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-
         <form onSubmit={handleSubmit} className="space-y-6">
-
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Full Name
             </label>
-
             <input
               type="text"
               name="name"
@@ -130,13 +118,11 @@ const UpdateStudentForm = () => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
-
             <input
               type="email"
               name="email"
@@ -147,13 +133,11 @@ const UpdateStudentForm = () => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
-
           {/* Department */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Department
             </label>
-
             <select
               name="departmentId"
               value={formData.departmentId}
@@ -162,7 +146,6 @@ const UpdateStudentForm = () => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value={"0"}>Select Department</option>
-
               {departments?.map((d: IDepartment) => {
                 return (
                   <option value={d.id}>{d.name}</option>
@@ -184,13 +167,9 @@ const UpdateStudentForm = () => {
             >
               Save Student
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 };

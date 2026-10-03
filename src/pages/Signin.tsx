@@ -28,9 +28,6 @@ const SigninPage = () => {
      if(response.data.role.toLowerCase() == Roles.Student.toLowerCase() ){
         navigate("/student/dashboard")
      }
-    if(response.data.role.toLowerCase() == Roles.Teacher.toLowerCase() ){
-        navigate("/teacher/dashboard")
-     }
     if(response.data.role.toLowerCase() == Roles.Admin.toLowerCase() ){
         navigate("/admin/dashboard")
      }

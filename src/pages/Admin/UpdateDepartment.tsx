@@ -15,29 +15,22 @@ interface FormData {
 const EditDepartmentForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-
   const auth = useContext(AuthContext);
-
   const [formData, setFormData] = useState<FormData>({
     name: "",
     code: "",
   });
-
   const [loading, setLoading] = useState(true);
 
-  // Get existing department
   useEffect(() => {
     if (!id) return;
-
     const getDepartment = async () => {
       try {
         const res = await getDepartmentByIdApi(
           auth?.user?.token!,
           id
         );
-
         console.log(res.data)
-
         setFormData({
           name: res.data.name,
           code: res.data.code,
@@ -54,21 +47,17 @@ const EditDepartmentForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!id) {
       toast.error("Department ID is missing");
       return;
     }
-
     try {
       const res = await UpdateDepartmentApi(
         auth?.user?.token!,
         id,
         formData
       );
-
       toast.success(res.message || "Department updated successfully");
-
       navigate("/admin/departments");
     } catch (error) {
       toast.error("Failed to update department");
@@ -85,7 +74,6 @@ const EditDepartmentForm = () => {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-
       {/* Header */}
       <div>
         <Link
@@ -106,15 +94,12 @@ const EditDepartmentForm = () => {
 
       {/* Form */}
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-
         <form onSubmit={handleSubmit} className="space-y-6">
-
           {/* Department Name */}
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
               Department Name
             </label>
-
             <input
               type="text"
               value={formData.name}
@@ -129,7 +114,6 @@ const EditDepartmentForm = () => {
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           {/* Code */}
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -150,7 +134,6 @@ const EditDepartmentForm = () => {
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           {/* Buttons */}
           <div className="flex justify-end gap-3 border-t pt-4">
 
@@ -160,16 +143,13 @@ const EditDepartmentForm = () => {
             >
               Cancel
             </Link>
-
             <button
               type="submit"
               className="rounded-lg bg-blue-600 px-5 py-2.5 text-white hover:bg-blue-700"
             >
               Update Department
             </button>
-
           </div>
-
         </form>
       </div>
     </div>
