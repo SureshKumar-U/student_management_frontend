@@ -17,8 +17,8 @@ import StudentDashboard from "./pages/Student/Dashboard";
 import StudentProfile from "./pages/Student/Profile";
 import MyCourses from "./pages/Student/Mycourses";
 
-import SigninPage from "./pages/Signin";
-import SignUpPage from "./pages/SignUp";
+import SigninPage from "./pages/Auth/Signin";
+import SignUpPage from "./pages/Auth/SignUp";
 import { ToastContainer } from "react-toastify";
 import CourseEdit from "./pages/Admin/UpdateCourseForm";
 import EditDepartmentForm from "./pages/Admin/UpdateDepartment";
@@ -89,7 +89,7 @@ function App() {
             path="users"
             element={<UserList />}
           />
-          
+
 
         </Route>
 

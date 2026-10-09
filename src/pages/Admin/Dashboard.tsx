@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { getAdminDashboardStats, getRecentStudentsApi } from "../../services/AdminService";
+import { useSelector } from "react-redux";
 
 interface IRecentStudent {
   email: string,
@@ -8,8 +9,7 @@ interface IRecentStudent {
   name:string,
 }
 const Dashboard = () => {
-
-  const auth = useContext(AuthContext);
+  const auth = useSelector((state: any) => state.auth);
   const token = auth?.user?.token
   const [dashboardStats, setDashboardStats] = useState<Record<string, string | number>>({});
   const [recentStudents, setRecentStudents] = useState<IRecentStudent[]>([]);

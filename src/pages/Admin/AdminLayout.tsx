@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import useAuth from "../../utils/hooks/useAuth";
 
 const AdminLayout = () => {
   const location = useLocation();
-  const auth = useContext(AuthContext);
+  const {signOut} = useAuth();
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard" },
     { name: "Students", path: "/admin/students" },
@@ -15,7 +14,6 @@ const AdminLayout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-
       {/* Sidebar */}
       <aside className="w-64 bg-slate-900 text-white flex flex-col">
 
@@ -52,7 +50,7 @@ const AdminLayout = () => {
         {/* Logout */}
         <div className="p-4 border-t border-slate-700">
           <button
-          onClick={auth?.logout}
+          onClick={() =>signOut()}
            className="w-full px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-red-600 hover:text-white transition">
             Logout
           </button>
@@ -73,20 +71,16 @@ const AdminLayout = () => {
             <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
               A
             </div>
-
             <span className="text-sm font-medium text-gray-700">
               Admin
             </span>
           </div>
         </header>
-
         {/* Page */}
         <div className="p-8">
           <Outlet />
         </div>
-
       </main>
-
     </div>
   );
 };
