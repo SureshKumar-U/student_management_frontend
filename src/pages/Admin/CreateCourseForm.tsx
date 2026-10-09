@@ -1,13 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CreateCourseApi, GetAllDepartmentsApi } from "../../services/AdminService";
+import {
+  CreateCourseApi,
+  GetAllDepartmentsApi,
+} from "../../services/AdminService";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 const CourseForm = () => {
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
-  const [departments, setDepartments] = useState<any>([])
+  const [departments, setDepartments] = useState<any>([]);
   const [formData, setFormData] = useState({
     code: "",
     name: "",
@@ -15,26 +18,26 @@ const CourseForm = () => {
   });
 
   useEffect(() => {
-    if(!auth) return
-    GetAllDepartmentsApi(auth?.user?.token!).then(res => {
-      setDepartments(res.data)
-    })
-  }, [auth])
+    if (!auth) return;
+    GetAllDepartmentsApi(auth?.user?.token!).then((res) => {
+      setDepartments(res.data);
+    });
+  }, [auth]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:value,
+      [name]: value,
     }));
   };
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res:any = await CreateCourseApi(auth?.user?.token!,formData)
-    toast(res.message)
-  navigate("/admin/courses");
+    const res: any = await CreateCourseApi(auth?.user?.token!, formData);
+    toast(res.message);
+    navigate("/admin/courses");
   };
 
   return (
@@ -46,12 +49,8 @@ const CourseForm = () => {
         >
           ← Back to Courses
         </Link>
-        <h1 className="mt-3 text-2xl font-bold text-gray-900">
-          Add Course
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Create a new course.
-        </p>
+        <h1 className="mt-3 text-2xl font-bold text-gray-900">Add Course</h1>
+        <p className="mt-1 text-sm text-gray-500">Create a new course.</p>
       </div>
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -96,11 +95,7 @@ const CourseForm = () => {
             >
               {departments?.length &&
                 departments.map((dept: any) => {
-                  return (
-                    <option value={dept.id}>
-                      {dept.name}
-                    </option>
-                  )
+                  return <option value={dept.id}>{dept.name}</option>;
                 })}
             </select>
           </div>

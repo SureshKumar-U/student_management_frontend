@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { GetAllUsers } from "../../services/UserService";
 
 type Role = "ADMIN" | "STUDENT";
@@ -13,16 +12,11 @@ interface User {
 }
 
 const UserList = () => {
+  const [users, setUsers] = useState<User[]>([]);
 
-
-  const [users,setUsers] = useState<User[]>([])
-
-  useEffect(()=>{
-      GetAllUsers()
-      .then(res=>setUsers(res.data))
-  },[])
-
-
+  useEffect(() => {
+    GetAllUsers().then((res) => setUsers(res.data));
+  }, []);
 
   const roleClasses: Record<Role, string> = {
     ADMIN: "bg-purple-100 text-purple-700",
@@ -33,9 +27,7 @@ const UserList = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Users
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
           <p className="mt-1 text-sm text-gray-500">
             Manage users and their roles.
           </p>
@@ -55,9 +47,7 @@ const UserList = () => {
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Username
                 </th>
-                <th className="px-6 py-4 font-semibold text-gray-600">
-                  Role
-                </th>
+                <th className="px-6 py-4 font-semibold text-gray-600">Role</th>
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Status
                 </th>
@@ -65,10 +55,7 @@ const UserList = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-gray-50"
-                >
+                <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {user.name}
                   </td>

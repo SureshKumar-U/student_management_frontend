@@ -9,14 +9,11 @@ const rootReducer = combineReducers({
   auth: authReducer,
 });
 
-
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['auth'],
+  whitelist: ["auth"],
 };
-
-
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
