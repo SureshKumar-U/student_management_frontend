@@ -1,23 +1,20 @@
- export interface ILogin{
-  email :string,
-  password: string,
+export interface ILogin {
+  email: string;
+  password: string;
 }
 
-
- export enum Roles {
+export enum Roles {
   Admin = "ADMIN",
   Teacher = "TEACHER",
-  Student = "STUDENT"
+  Student = "STUDENT",
 }
 
-
-export interface ISignUp{
-  name:string,
-  email:string,
-  password:string,
-  role:Roles,
+export interface ISignUp {
+  name: string;
+  email: string;
+  password: string;
+  role: Roles;
 }
-
 
 export interface DeletePopupProps {
   open: boolean;
@@ -27,17 +24,16 @@ export interface DeletePopupProps {
   onConfirm: () => void;
 }
 
-export interface User{
-  id:number ;
-  token:string;
-  name:string;
-  email:string;
-  role:Roles;
+export interface User {
+  id: number;
+  token: string;
+  name: string;
+  email: string;
+  role: Roles;
 }
 
-export interface IAuthContext{
+export interface IAuthContext {
   user: User | null;
-  login : (user:User)=>void;
-  logout: ()=>void;
+  login: (user: User) => void;
+  logout: () => void;
 }
-

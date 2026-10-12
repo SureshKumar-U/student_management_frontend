@@ -1,5 +1,4 @@
 import * as ErrorMessages from '../../constants/errorConstants';
-import { store } from '../../store/store';
 
 export const extractApiErrorMessage = (data: unknown, defaultMessage: string = ErrorMessages.ERR_AN_ERROR_OCCURRED): string => {
   if (!data) return defaultMessage;

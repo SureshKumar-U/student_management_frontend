@@ -1,38 +1,31 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CreateDepartmentApi } from "../../services/AdminService";
-import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { createDepartment, type DepartmentInput } from "../../store/slices/departmentSlice";
+import { useAppDispatch } from "../../store/store";
 
 
-interface formData {
-  name: string;
-  code: string
-}
 const DepartmentForm = () => {
-
   const navigate = useNavigate();
-
-  const auth = useContext(AuthContext);
-
-  const [formData, setFormData] = useState<formData>({ name: "", code: "" });
+  const [formData, setFormData] = useState<DepartmentInput>({ name: "", code: "" });
+  const dispatch = useAppDispatch()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
-      const response = await CreateDepartmentApi(auth?.user?.token!, formData)
-      toast.success(response?.message);
-      navigate("/admin/departments")
+      const response = await dispatch(createDepartment(formData)).unwrap();
+      console.log(response)
+      toast.success(response);
+      navigate("/admin/departments");
     } catch (err: any) {
-      toast.error(err?.message)
-    };
-  }
-
+       console.log(err)
+      toast.error(err);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-
       <div>
         <Link
           to="/admin/departments"
@@ -47,9 +40,7 @@ const DepartmentForm = () => {
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Department Name
@@ -58,7 +49,9 @@ const DepartmentForm = () => {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="Enter department name"
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
@@ -73,7 +66,9 @@ const DepartmentForm = () => {
             <input
               type="text"
               value={formData.code}
-              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, code: e.target.value })
+              }
               placeholder="Enter Code"
               required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
@@ -81,7 +76,6 @@ const DepartmentForm = () => {
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t">
-
             <Link
               to="/admin/departments"
               className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
@@ -95,13 +89,9 @@ const DepartmentForm = () => {
             >
               Save Department
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 };

@@ -1,26 +1,23 @@
-import { useEffect, useState } from "react";
-import { GetAllUsers } from "../../services/UserService";
-
-type Role = "ADMIN" | "STUDENT";
-
-interface User {
-  id: number;
-  name: string;
-  role: Role;
-  email: string;
-  // email:string
-}
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+import { useAppDispatch } from "../../store/store";
+import { fetchUsers, type User } from "../../store/slices/userSlice";
+import { Link } from "react-router-dom";
 
 const UserList = () => {
-  const [users, setUsers] = useState<User[]>([]);
-
+  const dispatch = useAppDispatch();
+  const { users, status, error } = useSelector(
+    (state: RootState) => state.users,
+  );
   useEffect(() => {
-    GetAllUsers().then((res) => setUsers(res.data));
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
-  const roleClasses: Record<Role, string> = {
+  const roleClasses: Record<User["role"], string> = {
     ADMIN: "bg-purple-100 text-purple-700",
     STUDENT: "bg-green-100 text-green-700",
+    TEACHER: "bg-blue-100 text-blue-700",
   };
 
   return (
@@ -54,14 +51,35 @@ const UserList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {users.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+              {status === "loading" && (
+                <tr>
+                  <td colSpan={3} className="py-4 text-center">
+                    Loading users...
+                  </td>
+                </tr>
+              )}
+              {status === "failed" && (
+                <tr>
+                  <td colSpan={3} className="py-4 text-center text-red-600">
+                    {error}
+                  </td>
+                </tr>
+              )}
+              {status === "succeeded" && users.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="py-4 text-center">
+                    No users found.
+                  </td>
+                </tr>
+              )}
+              {users.map((user :any, index:number) => (
+                <tr key={index+ 1} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {user.name}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${roleClasses[user.role]}`}
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${roleClasses[user?.role as User["role"]] }`}
                     >
                       {user.role}
                     </span>

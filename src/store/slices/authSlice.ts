@@ -1,6 +1,12 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type {  Roles, User } from "../../Types";
-import { LoginApi, SignUpApi } from "../../services/UserService";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import type { Roles, User } from "../../Types";
+import { loginApi, signUpApi } from "../../services/UserService";
+import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
+import * as ErrorMessages from "../../constants/errorConstants";
 
 interface AuthState {
   user: User | null;
@@ -16,14 +22,17 @@ const initialState: AuthState = {
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async ({email,password}: { email: string; password: string }, { rejectWithValue }) => {
+  async (
+    { email, password }: { email: string; password: string },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await LoginApi({ email, password });
-      const user  = response.data;
+      const response = await loginApi({ email, password });
+      const user = response.data;
       return user;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : "Unable to log in",
+        extractApiErrorMessage(error, ErrorMessages.ERR_FAILED_TO_FETCH_USER),
       );
     }
   },
@@ -31,9 +40,17 @@ export const loginUser = createAsyncThunk(
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
-  async ({name, email, password, role}: { name: string; email: string; password: string; role: Roles }, { rejectWithValue }) => {
+  async (
+    {
+      name,
+      email,
+      password,
+      role,
+    }: { name: string; email: string; password: string; role: Roles },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await SignUpApi({ name, email, password, role });
+      const response = await signUpApi({ name, email, password, role });
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -42,6 +59,7 @@ export const signUpUser = createAsyncThunk(
     }
   },
 );
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -54,7 +72,7 @@ const authSlice = createSlice({
     logout: (state: AuthState) => {
       state.user = null;
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,7 +86,8 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload ?? action.error.message ?? "Unable to log in";
+        state.error =
+          action.payload ?? action.error.message ?? "Unable to log in";
       })
       .addCase(signUpUser.pending, (state) => {
         state.status = "loading";
@@ -80,11 +99,9 @@ const authSlice = createSlice({
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload ?? action.error.message ?? "Unable to sign up";
       });
   },
-},
-);
+});
 
 export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;

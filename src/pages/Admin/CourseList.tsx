@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { GetAllCoursesApi } from "../../services/AdminService";
-import { AuthContext } from "../../context/AuthContext";
 import DeletePopup from "../../components/Popup";
-import { DeleteCourseApi } from "../../services/AdminService";
 import { toast } from "react-toastify";
+import {  useSelector } from "react-redux";
+import { fetchAllCourses,deleteCourse } from "../../store/slices/courseSlice";
+import { useAppDispatch } from "../../store/store";
 
 interface ICourse {
   id: number;
@@ -14,16 +14,21 @@ interface ICourse {
 }
 
 const CourseList = () => {
-
-  const [courses, setCourses] = useState<ICourse[]>([]);
+  const {courses} = useSelector((state:any)=>state.courses)
   const [showDelete, setShowDelete] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null)
-  const auth = useContext(AuthContext)
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    //clear previous state to prevent stale data
+
+    dispatch(fetchAllCourses())
+  }, [])
 
   const handleDelete = async () => {
     try {
-      const res = await DeleteCourseApi(auth?.user?.token!, selectedCourseId!)
-      toast.success(res.message)
+      const res = await dispatch(deleteCourse(selectedCourseId!)).unwrap()
+      toast.success(res)
+      await dispatch(fetchAllCourses())
 
     } catch (err: any) {
       toast.error(err?.message!)
@@ -35,17 +40,6 @@ const CourseList = () => {
 
   };
 
-
-
-
-
-  useEffect(() => {
-    if (!auth) return
-
-
-    GetAllCoursesApi(auth?.user?.token!).then(res => setCourses(res.data))
-
-  }, [auth])
 
   return (
     <div className="space-y-6">
@@ -69,7 +63,6 @@ const CourseList = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50 border-b">
-
               <tr>
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Code
@@ -96,12 +89,11 @@ const CourseList = () => {
                     No Courses created yet
                   </td>
                 </tr>}
-              {courses?.map((course) => (
+              {courses?.map((course:ICourse) => (
                 <tr
                   key={course.id}
                   className="hover:bg-gray-50"
                 >
-
                   <td className="px-6 py-4">
                     <span className="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md text-xs font-semibold">
                       {course.code}
@@ -117,16 +109,13 @@ const CourseList = () => {
                   </td>
 
                   <td className="px-6 py-4">
-
                     <div className="flex gap-3">
-
                       <Link
                         to={`/admin/courses/edit/${course.id}`}
                         className="text-blue-600 hover:text-blue-800 font-medium"
                       >
                         Edit
                       </Link>
-
                       <button className="text-red-600 hover:text-red-800 font-medium"
                         onClick={() => {
                           setShowDelete(true)
@@ -135,11 +124,8 @@ const CourseList = () => {
                       >
                         Delete
                       </button>
-
                     </div>
-
                   </td>
-
                 </tr>
               ))}
               <DeletePopup

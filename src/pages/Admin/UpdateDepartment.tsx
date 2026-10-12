@@ -1,13 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   getDepartmentByIdApi,
-  UpdateDepartmentApi,
+  updateDepartmentApi,
 } from "../../services/AdminService";
-import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../store/store";
+import { fetchDepartmentById, updateDepartment } from "../../store/slices/departmentSlice";
 
-interface FormData {
+interface DepartmentInput {
   name: string;
   code: string;
 }
@@ -15,25 +17,21 @@ interface FormData {
 const EditDepartmentForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const auth = useContext(AuthContext);
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<DepartmentInput>({
     name: "",
     code: "",
   });
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
     const getDepartment = async () => {
       try {
-        const res = await getDepartmentByIdApi(
-          auth?.user?.token!,
-          id
-        );
-        console.log(res.data)
+        const res: any = await dispatch(fetchDepartmentById(id)).unwrap();
         setFormData({
-          name: res.data.name,
-          code: res.data.code,
+          name: res.name,
+          code: res.code,
         });
       } catch (error) {
         toast.error("Failed to load department");
@@ -41,9 +39,8 @@ const EditDepartmentForm = () => {
         setLoading(false);
       }
     };
-
     getDepartment();
-  }, [id, auth?.user?.token]);
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,14 +49,12 @@ const EditDepartmentForm = () => {
       return;
     }
     try {
-      const res = await UpdateDepartmentApi(
-        auth?.user?.token!,
-        id,
-        formData
-      );
-      toast.success(res.message || "Department updated successfully");
+      const res = await dispatch(updateDepartment({ id, data: formData })).unwrap();
+
+      toast.success(res || "Department updated successfully");
       navigate("/admin/departments");
     } catch (error) {
+
       toast.error("Failed to update department");
     }
   };
@@ -136,7 +131,6 @@ const EditDepartmentForm = () => {
           </div>
           {/* Buttons */}
           <div className="flex justify-end gap-3 border-t pt-4">
-
             <Link
               to="/admin/departments"
               className="rounded-lg border border-gray-300 px-5 py-2.5 text-gray-700 hover:bg-gray-50"

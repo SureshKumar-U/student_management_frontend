@@ -1,14 +1,28 @@
-export const ERR_NETWORK_CONNECTION = (path: string) => `Network error: Unable to connect to the server at ${path}. Please check your connection.`;
+export const ERR_NETWORK_CONNECTION = (path: string) =>
+  `Network error: Unable to connect to the server at ${path}. Please check your connection.`;
 export const ERR_NETWORK_REQUEST_FAILED = "Network request failed.";
 export const ERR_API_REQUEST_FAILED = "API request failed.";
 export const ERR_AN_UNEXPECTED_ERROR_OCCURRED = "An unexpected error occurred.";
-export const ERR_LOGIN_FAILED = 'Login failed';
+export const ERR_LOGIN_FAILED = "Login failed";
 export const ERR_FAILED_TO_UPDATE_PROFILE = "Failed to update profile";
 export const ERR_INVALID_EMAIL_OR_PASSWORD = "Invalid email or password.";
 export const ERR_REGISTER_FAILED = "Failed to register user.";
 export const ERR_AN_ERROR_OCCURRED = "An error occurred";
-
-
+export const ERR_FETCH_USERS_LIST = (statusText: string) => `Error fetching users list: ${statusText}`;
+export const ERR_FAILED_TO_FETCH_USER = "Failed to fetch user";
+export const ERR_FAILED_TO_CREATE_USER = "Failed to create user";
+export const ERR_FAILED_TO_UPDATE_USER = "Failed to update user";
+export const ERR_FAILED_TO_DELETE_USER = "Failed to delete user";
+export const ERR_FAILED_TO_FETCH_ALL_COURSES = "Failed to fetch All courses.";
+export const ERR_FAILED_TO_FETCH_COURSE = "Failed to fetch course.";
+export const ERR_FAILED_TO_CREATE_COURSE = "Failed to create course.";
+export const ERR_FAILED_TO_UPDATE_COURSE = "Failed to update course.";
+export const ERR_FAILED_TO_DELETE_COURSE = "Failed to delete course.";
+export const ERR_FAILED_TO_DELETE_DEPARTMENT = "Failed to delete department.";
+export const ERR_FAILED_TO_CREATE_DEPARTMENT = "Failed to create department.";
+export const ERR_FAILED_TO_UPDATE_DEPARTMENT = "Failed to update department.";
+export const ERR_FAILED_TO_FETCH_ALL_DEPARTMENTS = "Failed to fetch departments.";
+export const ERR_FAILED_TO_FETCH_DEPARTMENT = "Failed to fetch department.";
 
 export const VALIDATION_LIMITS = {
   TEXT_MIN: 3,
@@ -24,7 +38,6 @@ export const VALIDATION_LIMITS = {
   ZIP_CODE_MIN: 5,
   ZIP_CODE_MAX: 10,
 } as const;
-
 
 export const VALIDATION_MESSAGES = {
   // Required Messages
@@ -42,8 +55,10 @@ export const VALIDATION_MESSAGES = {
   PASSWORDS_MUST_MATCH: "Passwords must match",
 
   // Length Validation Messages (Templates & Specific)
-  MIN_LENGTH: (fieldName: string, min: number) => `${fieldName} must be at least ${min} characters`,
-  MAX_LENGTH: (fieldName: string, max: number) => `${fieldName} must not exceed ${max} characters`,
+  MIN_LENGTH: (fieldName: string, min: number) =>
+    `${fieldName} must be at least ${min} characters`,
+  MAX_LENGTH: (fieldName: string, max: number) =>
+    `${fieldName} must not exceed ${max} characters`,
   EMAIL_MIN_LENGTH: `Email must be at least ${VALIDATION_LIMITS.EMAIL_MIN} characters`,
   EMAIL_MAX_LENGTH: `Email must not exceed ${VALIDATION_LIMITS.EMAIL_MAX} characters`,
   NAME_MIN_LENGTH: `First Name must be at least ${VALIDATION_LIMITS.NAME_MIN} characters`,
@@ -69,14 +84,17 @@ export const VALIDATION_MESSAGES = {
   DOB_FUTURE: "Date of Birth cannot be in the future",
   DOB_MIN: "Date of Birth cannot be before 1900",
   ZIP_CODE_INVALID: "Please enter a valid Zip Code",
-  LETTERS_AND_NUMBERS_ONLY: (fieldName: string) => `${fieldName} should only contain letters and numbers`,
+  LETTERS_AND_NUMBERS_ONLY: (fieldName: string) =>
+    `${fieldName} should only contain letters and numbers`,
   ONLY_LETTERS_AND_NUMBERS: "Only letters and numbers allowed",
-  ALPHANUMERIC_REQUIRED: (fieldName: string) => `${fieldName} should contain at least one letter or number`,
+  ALPHANUMERIC_REQUIRED: (fieldName: string) =>
+    `${fieldName} should contain at least one letter or number`,
 
   // Password Complexity Messages
   PASSWORD_UPPERCASE_REQUIRED: "Must include at least one uppercase letter",
   PASSWORD_LOWERCASE_REQUIRED: "Must include at least one lowercase letter",
   PASSWORD_NUMBER_REQUIRED: "Must include at least one number",
   PASSWORD_SPECIAL_REQUIRED: "Must include at least one special character",
-  PASSWORD_REQUIREMENTS_NOT_MET: "Please meet all password requirements before submitting.",
+  PASSWORD_REQUIREMENTS_NOT_MET:
+    "Please meet all password requirements before submitting.",
 } as const;

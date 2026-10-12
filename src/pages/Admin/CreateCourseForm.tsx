@@ -1,44 +1,52 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  CreateCourseApi,
-  GetAllDepartmentsApi,
-} from "../../services/AdminService";
-import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { createCourse, type CourseInput } from "../../store/slices/courseSlice";
+import { useAppDispatch, type RootState } from "../../store/store";
+import { fetchDepartments } from "../../store/slices/departmentSlice";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const CourseForm = () => {
   const navigate = useNavigate();
-  const auth = useContext(AuthContext);
-  const [departments, setDepartments] = useState<any>([]);
-  const [formData, setFormData] = useState({
-    code: "",
-    name: "",
-    departmentId: 0,
+  const dispatch = useAppDispatch();
+  const { departments } = useSelector((state: RootState) => state.departments);
+  const formik = useFormik<CourseInput>({
+    initialValues: {
+      code: "",
+      name: "",
+      departmentId: "",
+    },
+    validationSchema: Yup.object({
+      code: Yup.string().trim().required("Course code is required."),
+      name: Yup.string().trim().required("Course name is required."),
+      departmentId: Yup.mixed<number | string>()
+        .required("Department is required.")
+        .test(
+          "department-selected",
+          "Department is required.",
+          (value) => value !== "",
+        ),
+    }),
+    onSubmit: async (values) => {
+      try {
+        await dispatch(createCourse(values)).unwrap();
+        toast.success("Course created successfully.");
+        navigate("/admin/courses");
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : String(error),
+        );
+      }
+    },
   });
 
   useEffect(() => {
-    if (!auth) return;
-    GetAllDepartmentsApi(auth?.user?.token!).then((res) => {
-      setDepartments(res.data);
-    });
-  }, [auth]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const res: any = await CreateCourseApi(auth?.user?.token!, formData);
-    toast(res.message);
-    navigate("/admin/courses");
-  };
+    if (!departments.length) {
+      dispatch(fetchDepartments());
+    }
+  }, [departments.length, dispatch]);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -53,7 +61,7 @@ const CourseForm = () => {
         <p className="mt-1 text-sm text-gray-500">Create a new course.</p>
       </div>
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Course Code
@@ -61,12 +69,15 @@ const CourseForm = () => {
             <input
               type="text"
               name="code"
-              value={formData.code}
-              onChange={handleChange}
+              value={formik.values.code}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder="CS101"
-              required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {formik.touched.code && formik.errors.code && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.code}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -75,12 +86,15 @@ const CourseForm = () => {
             <input
               type="text"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               placeholder="Enter course name"
-              required
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {formik.touched.name && formik.errors.name && (
+              <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -88,16 +102,23 @@ const CourseForm = () => {
             </label>
             <select
               name="departmentId"
-              value={formData.departmentId}
-              onChange={handleChange}
-              required
+              value={formik.values.departmentId}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {departments?.length &&
-                departments.map((dept: any) => {
-                  return <option value={dept.id}>{dept.name}</option>;
-                })}
+              <option value="">Select Department</option>
+              {departments.map((department:any) => (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              ))}
             </select>
+            {formik.touched.departmentId && formik.errors.departmentId && (
+              <p className="mt-1 text-sm text-red-600">
+                {formik.errors.departmentId}
+              </p>
+            )}
           </div>
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Link
@@ -108,9 +129,10 @@ const CourseForm = () => {
             </Link>
             <button
               type="submit"
+              disabled={formik.isSubmitting}
               className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-              Save Course
+              {formik.isSubmitting ? "Saving..." : "Save Course"}
             </button>
           </div>
         </form>

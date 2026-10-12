@@ -1,7 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { getStudentByIdApi,UpdateStudentApi } from "../../services/StudentService";
-import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 interface StudentProfile {
   studentId: string;
@@ -19,7 +19,7 @@ const Profile = () => {
     email: "",
     department: "",
   });
-  const auth = useContext(AuthContext);
+  const auth = useSelector((state: any) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
 
   const [data,setData]  = useState([])

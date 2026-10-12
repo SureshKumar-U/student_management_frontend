@@ -1,5 +1,4 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import {  useEffect, useState } from "react";
 import {
   getAdminDashboardStats,
   getRecentStudentsApi,

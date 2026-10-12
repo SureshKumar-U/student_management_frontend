@@ -1,53 +1,57 @@
 import { AUTH_ENDPOINTS } from "../constants/apiConstants";
-import type { ILogin, ISignUp, } from "../Types";
+import type { ILogin } from "../Types";
+import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
 import makeApiRequest from "./MakeApiRequest";
+import * as ErrorMessages from "../constants/errorConstants";
 
-const BASEAPI_URL = 'http://localhost:5180/api/v1'
+export const loginApi = async (payload: ILogin): Promise<any> => {
+  const response = await makeApiRequest(AUTH_ENDPOINTS.LOGIN, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      extractApiErrorMessage(data, ErrorMessages.ERR_LOGIN_FAILED),
+    );
+  }
+  return data;
+};
 
-export const LoginApi = async (data: ILogin): Promise<any> => {
-    const response = await makeApiRequest(AUTH_ENDPOINTS.LOGIN, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-    }
-    return await response.json();
-}
+export const signUpApi = async (payload: any): Promise<any> => {
+  const response = await makeApiRequest(AUTH_ENDPOINTS.REGISTER, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      extractApiErrorMessage(data, ErrorMessages.ERR_REGISTER_FAILED),
+    );
+  }
+  return data;
+};
 
-export const SignUpApi = async (data: any): Promise<any> => {
-    const response = await makeApiRequest(AUTH_ENDPOINTS.REGISTER, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Signup failed');
-    }
-    return await response.json();
-}
-
-export const GetAllUsers = async (): Promise<any> => {
-    const response = await fetch(`${BASEAPI_URL}/auth/users`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Get all users failed');
-    }
-    return await response.json();
-}
-
-
-
-
+export const getAllUsersApi = async (): Promise<any> => {
+  const response = await makeApiRequest(AUTH_ENDPOINTS.GET_ALL_USERS, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(
+      extractApiErrorMessage(
+        data,
+        ErrorMessages.ERR_FETCH_USERS_LIST(response.statusText),
+      ),
+    );
+  return await data;
+};

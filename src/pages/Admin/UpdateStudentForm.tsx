@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
 import { getDepartmentListApi } from "../../services/AdminService";
 import { getStudentApi, UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 interface IStudentFormData {
   id: string,
@@ -21,7 +21,7 @@ interface IDepartment {
 const UpdateStudentForm = () => {
   const navigate = useNavigate();
   const [departments, setDepartments] = useState<IDepartment[]>([])
-  const auth = useContext(AuthContext);
+  const auth = useSelector((state: any) => state.auth);
   const { id } = useParams();
 
   const [formData, setFormData] = useState<IStudentFormData>({

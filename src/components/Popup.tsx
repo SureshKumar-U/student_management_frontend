@@ -1,6 +1,5 @@
 import type { DeletePopupProps } from "../Types";
 
-
 const DeletePopup = ({
   open,
   title = "Delete Item",
@@ -11,9 +10,8 @@ const DeletePopup = ({
   if (!open) return null;
 
   return (
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-800/20 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-800/20 backdrop-blur-sm px-4">
       <div className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl">
-
         {/* Icon */}
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
           <svg
@@ -34,13 +32,9 @@ const DeletePopup = ({
 
         {/* Content */}
         <div className="mt-4 text-center">
-          <h2 className="text-lg font-semibold text-gray-800">
-            {title}
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
 
-          <p className="mt-2 text-sm text-gray-500">
-            {message}
-          </p>
+          <p className="mt-2 text-sm text-gray-500">{message}</p>
         </div>
 
         {/* Buttons */}
