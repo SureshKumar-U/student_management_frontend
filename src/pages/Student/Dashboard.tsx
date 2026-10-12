@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { getStudentByIdApi } from "../../services/StudentService";
+import {  getStudentApi } from "../../services/StudentService";
 import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const auth = useSelector((state: any) => state.auth);
   const [data, setData] = useState<any>({});
+
   useEffect(() => {
-    if (!auth?.user) return;
-    getStudentByIdApi(auth?.user?.token!, auth?.user?.id!).then((res) =>
-      setData(res.data),
-    );
-  }, [auth]);
+    getStudentApi(auth?.user?.id!)
+  }, []);
 
   return (
     <div className="space-y-8">

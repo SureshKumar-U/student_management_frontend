@@ -1,25 +1,28 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import { createDepartment, type DepartmentInput } from "../../store/slices/departmentSlice";
+import {
+  createDepartment,
+  type DepartmentInput,
+} from "../../store/slices/departmentSlice";
 import { useAppDispatch } from "../../store/store";
-
 
 const DepartmentForm = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<DepartmentInput>({ name: "", code: "" });
-  const dispatch = useAppDispatch()
+  const [formData, setFormData] = useState<DepartmentInput>({
+    name: "",
+    code: "",
+  });
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response = await dispatch(createDepartment(formData)).unwrap();
-      console.log(response)
       toast.success(response);
       navigate("/admin/departments");
     } catch (err: any) {
-       console.log(err)
+      console.log(err);
       toast.error(err);
     }
   };

@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import {
-  getDepartmentByIdApi,
-  updateDepartmentApi,
-} from "../../services/AdminService";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../store/store";
-import { fetchDepartmentById, updateDepartment } from "../../store/slices/departmentSlice";
+import {
+  fetchDepartmentById,
+  updateDepartment,
+} from "../../store/slices/departmentSlice";
 
 interface DepartmentInput {
   name: string;
@@ -49,12 +47,13 @@ const EditDepartmentForm = () => {
       return;
     }
     try {
-      const res = await dispatch(updateDepartment({ id, data: formData })).unwrap();
+      const res = await dispatch(
+        updateDepartment({ id, data: formData }),
+      ).unwrap();
 
       toast.success(res || "Department updated successfully");
       navigate("/admin/departments");
     } catch (error) {
-
       toast.error("Failed to update department");
     }
   };

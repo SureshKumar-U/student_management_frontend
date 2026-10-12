@@ -1,54 +1,35 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  addCourseToStudentApi,
-  getAllCoursesApi,
-} from "../../services/StudentService";
+import { addCourseToStudentApi } from "../../services/StudentService";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
+import { fetchAllCourses } from "../../store/slices/courseSlice";
+import { useAppDispatch } from "../../store/store";
 
-interface Course {
-  id: number;
-  name: string;
-}
 
 const AddCourse = () => {
   const [selectedCourseId, setSelectedCourseId] = useState("");
-  const auth = useSelector((state: any) => state.auth);
   const navigate = useNavigate();
-  const [courses, setCources] = useState<Course[]>([]);
+  const { courses } = useSelector((state: any) => state.courses);
+  const auth = useSelector((state:any)=>state.auth)
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!auth?.user!) return;
-    getAllCoursesApi(auth?.user?.token!).then((res) => {
-      if (!res?.data?.length) return;
-      const courses: Course[] = res?.data?.map((c: any) => {
-        const course: Course = {
-          id: c.id,
-          name: c.name,
-        };
-
-        return course;
-      });
-      setCources(courses);
-    });
-  }, [auth]);
+    dispatch(fetchAllCourses());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!selectedCourseId) {
       toast.warn("Please select a course");
       return;
     }
-
     const payload: any = {
-      userId: auth?.user?.id,
       courseId: selectedCourseId,
     };
 
     try {
-      const res: any = await addCourseToStudentApi(auth?.user?.token!, payload);
+      const res: any = await addCourseToStudentApi( payload);
       toast.success(res.message);
       navigate("/student/courses");
     } catch (err: any) {
@@ -91,7 +72,7 @@ const AddCourse = () => {
             >
               <option value="">-- Select Course --</option>
 
-              {courses?.map((course) => (
+              {courses?.map((course:any) => (
                 <option key={course.id} value={course.id}>
                   {course.name}
                 </option>

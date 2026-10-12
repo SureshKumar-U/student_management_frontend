@@ -1,15 +1,50 @@
-const BASEAPI_URL = "http://localhost:5180/api/v1";
+import { STUDENT_ENDPOINTS } from "../constants/apiConstants";
+import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
+import makeApiRequest from "./MakeApiRequest";
+import * as ErrorMessages from "../constants/errorConstants";
 
-
-
-export const getStudentByIdApi = async (
-  token: string,
-  userId: number,
-): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/students/${userId}`, {
+export const getAllStudentsApi = async (): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_ALL, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      extractApiErrorMessage(
+        data,
+        ErrorMessages.ERR_FAILED_TO_FETCH_ALL_STUDENTS,
+      ),
+    );
+  }
+  return data;
+};
+
+export const getStudentByUserIdApi = async (userId: number): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_BY_ID(userId), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      extractApiErrorMessage(
+        data,
+        ErrorMessages.ERR_FAILED_TO_FETCH_ALL_STUDENTS,
+      ),
+    );
+  }
+  return data;
+};
+
+export const getStudentApi = async (studentId: string): Promise<any> => {
+  const response = await makeApiRequest(`/students/student/${studentId}`, {
+    method: "GET",
+    headers: {
       "Content-Type": "application/json",
     },
   });
@@ -21,94 +56,74 @@ export const getStudentByIdApi = async (
 
   return await response.json();
 };
-export const getStudentApi = async (
-  token: string,
-  studentId: string,
-): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/students/student/${studentId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
-  }
-
-  return await response.json();
-};
-
-export const UpdateStudentApi = async (
-  token: string,
-  data: any,
-  studentId: string,
-): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/students/${studentId}`, {
+export const UpdateStudentApi = async ({
+  studentId,
+  payload,
+}: {
+  studentId: string;
+  payload: any;
+}): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.UPDATE(studentId), {
     method: "PUT",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
+  const data = await response.json();
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
+    throw new Error(
+      extractApiErrorMessage(data, ErrorMessages.ERR_FAILED_TO_UPDATE_STUDENT),
+    );
   }
-  return await response.json();
+  return data;
 };
 
-export const addCourseToStudentApi = async (
-  token: string,
-  data: any,
+export const deleteStudentById = async (
+  studentId: number,
 ): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/student_enrollment`, {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.DELETE(studentId), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+    const data = await response.json();
+  if (!response.ok) {
+    throw new Error(extractApiErrorMessage(data,ErrorMessages.ERR_FAILED_TO_DELETE_DEPARTMENT));
+  }
+
+  return data;
+};
+
+
+export const addCourseToStudentApi = async (payload: any): Promise<any> => {
+  const response = await makeApiRequest(`/students/student_enrollment`, {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
+  const data = await response.json();
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
+    throw new Error(extractApiErrorMessage(data, "Failed to enroll course"));
   }
-  return await response.json();
+  return data;
 };
 
-export const getAllMyCoursesApi = async (
-  token: string,
-  userId: number,
-): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/students/courses/${userId}`, {
+export const getAllMyCoursesApi = async (userId: number): Promise<any> => {
+  const response = await makeApiRequest(`/students/courses/${userId}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
+  const data = await response.json();
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
+    throw new Error(extractApiErrorMessage(data, "Request Failed"));
   }
-  return await response.json();
+  return data;
 };
 
-export const getAllCoursesApi = async (token: string): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/courses`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
-  }
-  return await response.json();
-};

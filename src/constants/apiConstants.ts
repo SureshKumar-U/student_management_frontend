@@ -21,3 +21,12 @@ export const DEPARTMENT_ENDPOINTS = {
   UPDATE: (id: string | number) => `/departments/${id}`,
   DELETE: (id: string | number) => `/departments/${id}`,
 };
+
+export const STUDENT_ENDPOINTS = {
+  GET_ALL: "/students",
+  GET_BY_ID: (id: number ) => `/students/${id}`,
+  CREATE: "/students",
+  UPDATE: (id: string | number) => `/students/${id}`,
+  DELETE: (id: string | number) => `/students/${id}`,
+};
+

@@ -5,7 +5,7 @@ import {
   getAllCoursesApi,
   getCourseByIdApi,
   updateCourseApi,
-} from "../../services/AdminService";
+} from "../../services/CourseServices";
 import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
 import * as ErrorMessages from "../../constants/errorConstants";
 

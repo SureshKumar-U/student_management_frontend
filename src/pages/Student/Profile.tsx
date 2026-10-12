@@ -1,5 +1,5 @@
 import {  useEffect, useState } from "react";
-import { getStudentByIdApi,UpdateStudentApi } from "../../services/StudentService";
+import { getStudentByUserIdApi,UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
@@ -7,7 +7,6 @@ interface StudentProfile {
   studentId: string;
   name: string;
   email: string;
-
   department: string;
 }
 
@@ -22,11 +21,14 @@ const Profile = () => {
   const auth = useSelector((state: any) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [data,setData]  = useState([])
+  const [data,setData]  = useState([]);
+  
+
+
 
   useEffect(()=>{
 
-    getStudentByIdApi(auth?.user?.token!, auth?.user?.id!).
+    getStudentByUserIdApi( auth?.user?.id!).
     then(res=>{
       setData(res.data)
       setProfile({...profile, studentId:res.data.id,
@@ -52,16 +54,10 @@ const Profile = () => {
     }));
   };
 
-
-
-
-
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-
-   
      try{
-      const res = await UpdateStudentApi(auth?.user?.token!,profile,profile.studentId)
+      const res = await UpdateStudentApi({payload:profile, studentId:profile.studentId})
       toast.success(res.message)
      }
      catch(err:any){
@@ -73,20 +69,16 @@ const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-
       {/* Header */}
       <div className="flex items-center justify-between">
-
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
             My Profile
           </h1>
-
           <p className="mt-1 text-sm text-gray-500">
             View and manage your profile information.
           </p>
         </div>
-
         {!isEditing && (
           <button
             onClick={() => setIsEditing(true)}
@@ -96,9 +88,7 @@ const Profile = () => {
             Edit Profile
           </button>
         )}
-
       </div>
-
       {/* Profile Card */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
 

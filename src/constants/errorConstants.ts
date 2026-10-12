@@ -23,6 +23,12 @@ export const ERR_FAILED_TO_CREATE_DEPARTMENT = "Failed to create department.";
 export const ERR_FAILED_TO_UPDATE_DEPARTMENT = "Failed to update department.";
 export const ERR_FAILED_TO_FETCH_ALL_DEPARTMENTS = "Failed to fetch departments.";
 export const ERR_FAILED_TO_FETCH_DEPARTMENT = "Failed to fetch department.";
+export const ERR_FAILED_TO_FETCH_STUDENT = "Failed to fetch student.";
+export const ERR_FAILED_TO_UPDATE_STUDENT = "Failed to update student.";
+export const ERR_FAILED_TO_FETCH_STUDENT_COURSES = "Failed to fetch enrolled courses.";
+export const ERR_FAILED_TO_FETCH_ALL_STUDENTS = "Failed to fetch all students.";
+export const ERR_FAILED_TO_ENROLL_STUDENT = "Failed to enroll student in course.";
+export const ERR_FAILED_TO_DELETE_STUDENT = "Failed to delete student.";
 
 export const VALIDATION_LIMITS = {
   TEXT_MIN: 3,

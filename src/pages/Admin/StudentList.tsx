@@ -1,49 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteStudentById, getAllStudents } from "../../services/AdminService";
+import { deleteStudentById } from "../../services/StudentService";
 import DeletePopup from "../../components/Popup";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-
-interface Student {
-  id: number;
-  name: string;
-  email: string;
-  department: string;
-}
+import { useAppDispatch } from "../../store/store";
+import { deleteStudent, getAllStudents } from "../../store/slices/studentSlice";
 
 const StudentList = () => {
-  const [students, setStudents] = useState<Student[]>([]);
-  const auth = useSelector((state: any) => state.auth);
+  const { students } = useSelector((state: any) => state.students);
   const [showDelete, setShowDelete] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
     null,
   );
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!auth?.user?.token) return;
-    getAllStudents(auth?.user?.token!).then((res) => {
-      const students: Student[] = [];
-      res?.data?.forEach((st: any) => {
-        const student: Student = {
-          id: st.id,
-          name: st.user.name,
-          email: st.user.email,
-          department: st?.department?.name,
-        };
-        students.push(student);
-      });
-      setStudents(students);
-    });
-  }, [auth]);
+    dispatch(getAllStudents());
+  }, []);
 
   const handleDelete = async () => {
     try {
-      const res = await deleteStudentById(
-        auth?.user?.token!,
-        selectedStudentId!,
-      );
-      toast.success(res.message);
+      const res: any = await dispatch(
+        deleteStudent(selectedStudentId!),
+      ).unwrap();
+      toast.success(res);
+      dispatch(getAllStudents());
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -57,13 +39,11 @@ const StudentList = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Students</h1>
-
           <p className="mt-1 text-sm text-gray-500">
             Manage student information.
           </p>
         </div>
       </div>
-
       {/* Search */}
       <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
         <input
@@ -90,7 +70,6 @@ const StudentList = () => {
                 <th className="px-6 py-4 font-semibold">Actions</th>
               </tr>
             </thead>
-
             <tbody className="divide-y divide-gray-100">
               {!students?.length && (
                 <tr>
@@ -99,20 +78,16 @@ const StudentList = () => {
                   </td>
                 </tr>
               )}
-              {students?.map((student) => (
+              {students?.map((student: any) => (
                 <tr key={student.id} className="hover:bg-gray-50 transition">
                   <td className="px-6 py-4 text-gray-500">{student.id}</td>
-
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {student.name}
                   </td>
-
                   <td className="px-6 py-4 text-gray-500">{student.email}</td>
-
                   <td className="px-6 py-4 text-gray-500">
-                    {student.department || "NA"}
+                    {student?.department?.name || "NA"}
                   </td>
-
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Link
@@ -121,7 +96,6 @@ const StudentList = () => {
                       >
                         Edit
                       </Link>
-
                       <button
                         onClick={() => {
                           setShowDelete(true);

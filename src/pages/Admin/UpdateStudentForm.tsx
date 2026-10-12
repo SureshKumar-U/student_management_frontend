@@ -1,12 +1,15 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getDepartmentListApi } from "../../services/AdminService";
+import { getDepartmentListApi } from "../../services/departmentService";
 import { getStudentApi, UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../store/store";
+import { fetchDepartments } from "../../store/slices/departmentSlice";
+import { fetchStudentById, updateStudent } from "../../store/slices/studentSlice";
 
 interface IStudentFormData {
-  id: string,
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -20,10 +23,10 @@ interface IDepartment {
 
 const UpdateStudentForm = () => {
   const navigate = useNavigate();
-  const [departments, setDepartments] = useState<IDepartment[]>([])
-  const auth = useSelector((state: any) => state.auth);
+  const { departments } = useSelector((state: any) => state.departments);
+  const { selectedStudent } = useSelector((state: any) => state.students);
   const { id } = useParams();
-
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<IStudentFormData>({
     id: "",
     name: "",
@@ -31,57 +34,45 @@ const UpdateStudentForm = () => {
     phone: "",
     departmentId: 0,
   });
-
+  useEffect(() => {
+    if (!selectedStudent) return;
+    setFormData({
+      ...formData,
+      id: selectedStudent?.id,
+      name: selectedStudent?.name,
+      email: selectedStudent?.email,
+      departmentId: selectedStudent?.department?.id,
+    });
+  }, [selectedStudent]);
 
   useEffect(() => {
-    if (!auth?.user) return;
-    getDepartmentListApi(auth?.user?.token!)
-      .then(res => {
-        console.log(res)
-        if (res?.data.length == 0) return
-        const _departments: IDepartment[] = res.data.map((d: any) => {
-          return {
-            id: d.id,
-            name: d.name,
-          }
-        })
-        setDepartments(_departments)
-      })
-    getStudentApi(auth?.user?.token!, id!).
-      then(res => {
-        if (!res.data) return;
-        setFormData({
-          ...formData,
-          name: res.data.user.name,
-          email: res.data.user.email,
-          id: res.data.id,
-          departmentId: res.data.departmentId
-
-        })
-      }
-      ).
-      catch(err => console.log(err.message))
-
-  }, [auth])
+    if (!departments.length) {
+      dispatch(fetchDepartments());
+    }
+    dispatch(fetchStudentById(id!));
+  }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:  value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try{
-    const res:any = await UpdateStudentApi(auth?.user?.token!, formData,formData.id)
-    toast.success(res.message);
-    navigate("/admin/students");
-    }catch(err:any){
-      toast.error(err.message)
+    try {
+      const res: any = await dispatch(updateStudent({
+        payload: formData,
+        studentId: formData.id,
+      })).unwrap();
+      toast.success(res.message);
+      navigate("/admin/students");
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
@@ -96,9 +87,7 @@ const UpdateStudentForm = () => {
           ← Back to Students
         </Link>
 
-        <h1 className="mt-3 text-2xl font-bold text-gray-900">
-          Edit Student
-        </h1>
+        <h1 className="mt-3 text-2xl font-bold text-gray-900">Edit Student</h1>
       </div>
       {/* Form */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
@@ -147,9 +136,7 @@ const UpdateStudentForm = () => {
             >
               <option value={"0"}>Select Department</option>
               {departments?.map((d: IDepartment) => {
-                return (
-                  <option value={d.id}>{d.name}</option>
-                )
+                return <option value={d.id}>{d.name}</option>;
               })}
             </select>
           </div>

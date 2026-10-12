@@ -5,7 +5,7 @@ import {
   getDepartmentByIdApi,
   getDepartmentListApi,
   updateDepartmentApi,
-} from "../../services/AdminService";
+} from "../../services/departmentService";
 import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
 import * as ErrorMessages from "../../constants/errorConstants";
 
