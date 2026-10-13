@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getDepartmentListApi } from "../../services/departmentService";
-import { getStudentApi, UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../../store/store";
@@ -49,7 +47,7 @@ const UpdateStudentForm = () => {
     if (!departments.length) {
       dispatch(fetchDepartments());
     }
-    dispatch(fetchStudentById(id!));
+    dispatch(fetchStudentById(Number(id!)));
   }, []);
 
   const handleChange = (

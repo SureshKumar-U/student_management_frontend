@@ -26,6 +26,7 @@ export const STUDENT_ENDPOINTS = {
   GET_ALL: "/students",
   GET_BY_ID: (id: number ) => `/students/${id}`,
   CREATE: "/students",
+  GET_DASHBOARD_DATA :(id:number)=> `/students/student/${id}`,
   UPDATE: (id: string | number) => `/students/${id}`,
   DELETE: (id: string | number) => `/students/${id}`,
 };

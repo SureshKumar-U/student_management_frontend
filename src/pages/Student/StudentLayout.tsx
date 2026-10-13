@@ -1,9 +1,12 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import useAuth from "../../utils/hooks/useAuth";
 
 const StudentLayout = () => {
   const location = useLocation();
-  const { user, logout } = useSelector((state: any) => state.auth)!;
+  const { user } = useSelector((state: any) => state.auth)!;
+  const {signOut} = useAuth()
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -52,7 +55,7 @@ const StudentLayout = () => {
         {/* Logout */}
         <div className="p-4 border-t border-slate-700">
           <button
-            onClick={logout}
+            onClick={()=>{signOut() }}
             className="w-full px-4 py-3 rounded-lg text-sm font-medium
                        text-slate-300 hover:bg-red-600 hover:text-white transition"
           >
@@ -68,18 +71,15 @@ const StudentLayout = () => {
           <h2 className="text-lg font-semibold text-gray-800">
             Student Portal
           </h2>
-
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
               {user?.name ? user?.name?.charAt(0) : "A"}
             </div>
-
             <span className="text-sm font-medium text-gray-700">
               {user?.name!}
             </span>
           </div>
         </header>
-
         {/* Page Content */}
         <div className="p-8">
           <Outlet />

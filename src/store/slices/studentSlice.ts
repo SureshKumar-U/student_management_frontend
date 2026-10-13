@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addCourseToStudentApi,
   getAllMyCoursesApi,
-  getStudentApi,
-  getStudentByUserIdApi,
+  getStudentDashboardData,
   getAllStudentsApi,
   UpdateStudentApi,
   deleteStudentById,
+  getStudentApi,
 } from "../../services/StudentService";
 import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
 import * as ErrorMessages from "../../constants/errorConstants";
@@ -39,6 +39,7 @@ export interface EnrolledCourse {
 interface StudentState {
   students: Student[];
   selectedStudent: Student | null;
+  dashboardDetails: any;
   courses: EnrolledCourse[];
   listStatus: "idle" | "loading" | "succeeded" | "failed";
   detailStatus: "idle" | "loading" | "succeeded" | "failed";
@@ -51,6 +52,7 @@ interface StudentState {
 const initialState: StudentState = {
   students: [],
   selectedStudent: null,
+  dashboardDetails: null,
   courses: [],
   listStatus: "idle",
   detailStatus: "idle",
@@ -60,13 +62,14 @@ const initialState: StudentState = {
   error: null,
 };
 
-const sliceName = "students";
+const sliceName: string = "students";
 
-export const fetchStudentByUserId = createAsyncThunk(
-  `${sliceName}/fetchByUserId`,
-  async ({ userId }: { userId: number }, { rejectWithValue }) => {
+export const fetchStudentDashboardDetails = createAsyncThunk(
+  `${sliceName}/fetchStudentDashboard`,
+  async (userId :number, { rejectWithValue }) => {
     try {
-      const response = await getStudentByUserIdApi(userId);
+      const response = await getStudentDashboardData(userId);
+  
       if (!response?.data) {
         return rejectWithValue("Student was not found.");
       }
@@ -84,7 +87,7 @@ export const fetchStudentByUserId = createAsyncThunk(
 
 export const fetchStudentById = createAsyncThunk(
   `${sliceName}/fetchById`,
-  async ( studentId:string , { rejectWithValue }) => {
+  async (studentId: number, { rejectWithValue }) => {
     try {
       const response = await getStudentApi(studentId);
       if (!response?.data) {
@@ -123,13 +126,10 @@ export const updateStudent = createAsyncThunk(
 
 export const deleteStudent = createAsyncThunk(
   `${sliceName}/delete`,
-  async (
-    studentId:number,
-    { rejectWithValue },
-  ) => {
+  async (studentId: number, { rejectWithValue }) => {
     try {
-      const response = await deleteStudentById( studentId );
-      return  response?.message
+      const response = await deleteStudentById(studentId);
+      return response?.message;
     } catch (error) {
       return rejectWithValue(
         extractApiErrorMessage(
@@ -161,10 +161,7 @@ export const fetchMyCourses = createAsyncThunk(
 export const enrollStudentInCourse = createAsyncThunk(
   `${sliceName}/enrollInCourse`,
   async (
-    {
-      userId,
-      courseId,
-    }: { userId: number; courseId: number | string },
+    { userId, courseId }: { userId: number; courseId: number | string },
     { rejectWithValue },
   ) => {
     try {
@@ -200,8 +197,7 @@ export const getAllStudents = createAsyncThunk(
 const studentSlice = createSlice({
   name: sliceName,
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getAllStudents.pending, (state) => {
@@ -219,15 +215,15 @@ const studentSlice = createSlice({
           action.error.message ??
           "Unable to load students.";
       })
-      .addCase(fetchStudentByUserId.pending, (state) => {
+      .addCase(fetchStudentDashboardDetails.pending, (state) => {
         state.detailStatus = "loading";
         state.error = null;
       })
-      .addCase(fetchStudentByUserId.fulfilled, (state, action) => {
+      .addCase(fetchStudentDashboardDetails.fulfilled, (state, action) => {
         state.detailStatus = "succeeded";
-        state.selectedStudent = action.payload;
+        state.dashboardDetails = action.payload;
       })
-      .addCase(fetchStudentByUserId.rejected, (state, action) => {
+      .addCase(fetchStudentDashboardDetails.rejected, (state, action) => {
         state.detailStatus = "failed";
         state.error =
           (action.payload as string | undefined) ??

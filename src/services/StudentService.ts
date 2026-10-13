@@ -22,13 +22,14 @@ export const getAllStudentsApi = async (): Promise<any> => {
   return data;
 };
 
-export const getStudentByUserIdApi = async (userId: number): Promise<any> => {
-  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_BY_ID(userId), {
+export const   getStudentDashboardData = async (userId: number): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_DASHBOARD_DATA(userId), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   });
+  console.log(response)
   const data = await response.json();
   if (!response.ok) {
     throw new Error(
@@ -41,8 +42,8 @@ export const getStudentByUserIdApi = async (userId: number): Promise<any> => {
   return data;
 };
 
-export const getStudentApi = async (studentId: string): Promise<any> => {
-  const response = await makeApiRequest(`/students/student/${studentId}`, {
+export const getStudentApi = async (studentId: number): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_BY_ID(studentId), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

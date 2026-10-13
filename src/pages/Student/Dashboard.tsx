@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import {  getStudentApi } from "../../services/StudentService";
+// import {  getStudentDashboardData } from "../../services/StudentService";
 import { useSelector } from "react-redux";
+import { fetchStudentDashboardDetails } from "../../store/slices/studentSlice";
+import { useAppDispatch } from "../../store/store";
 
 const Dashboard = () => {
   const auth = useSelector((state: any) => state.auth);
-  const [data, setData] = useState<any>({});
 
+  const {dashboardDetails:studentInfo} = useSelector((state:any)=>state.students)
+  const dispatch = useAppDispatch();
+   
   useEffect(() => {
-    getStudentApi(auth?.user?.id!)
-  }, []);
+    if(!auth.user.id) return
+    dispatch(fetchStudentDashboardDetails(auth?.user?.id!))
+  }, [auth]);
 
   return (
     <div className="space-y-8">
@@ -28,14 +33,14 @@ const Dashboard = () => {
         {/* Student ID */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <p className="text-sm font-medium text-gray-500">Student ID</p>
-          <p className="mt-2 text-xs font-bold text-gray-900">{data?.id!}</p>
+          <p className="mt-2 text-xs font-bold text-gray-900">{studentInfo?.id!}</p>
         </div>
         {/* Department */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <p className="text-sm font-medium text-gray-500">Department</p>
 
           <p className="mt-2 text-xl font-bold text-gray-900">
-            {data?.department?.name || "NA"}
+            {studentInfo?.department?.name || "NA"}
           </p>
         </div>
 
@@ -44,7 +49,7 @@ const Dashboard = () => {
           <p className="text-sm font-medium text-gray-500">Enrolled Courses</p>
 
           <p className="mt-2 text-2xl font-bold text-gray-900">
-            {data?.enrollments?.length}
+            {studentInfo?.enrollments?.length}
           </p>
         </div>
       </div>
@@ -70,7 +75,7 @@ const Dashboard = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-              {data?.enrollments?.map((e: any) => (
+              {studentInfo?.enrollments?.map((e: any) => (
                 <tr key={e?.course?.code} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <span className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-semibold">

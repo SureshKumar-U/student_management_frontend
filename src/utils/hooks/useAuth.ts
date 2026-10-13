@@ -38,7 +38,8 @@ function useAuth() {
   ): Promise<SignInResult> => {
     try {
       const response = await SignInAPI(email, password);
-      if (response && response.userId) {
+
+      if (response && response.id) {
         return {
           status: "success",
           message: "Logged in successfully",

@@ -43,7 +43,6 @@ const SigninPage = () => {
         }
       } catch (error:any) {
         toast.error(error)
-
       } finally {
         setSubmitting(false);
       }
