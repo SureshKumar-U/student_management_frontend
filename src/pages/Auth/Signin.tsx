@@ -2,12 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import useAuth from "../../utils/hooks/useAuth";
 import { useFormik } from "formik";
+import { useState } from "react";
 import * as Yup from "yup";
 import { USER_VALIDATION_MESSAGES, USER_VALIDATION_LIMITS } from "../../constants/userConstants";
 
 const SigninPage = () => {
   const navigate = useNavigate()
   const { signIn } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const signInSchema = Yup.object({
     email: Yup.string()
       .trim()
@@ -81,15 +83,36 @@ const SigninPage = () => {
               <div className="mb-2 text-sm font-medium text-gray-700">
                 Password
               </div>
-              <input
-                type="password"
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="w-full rounded-md border border-gray-300 p-2 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter Password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="w-full rounded-md border border-gray-300 p-2 pr-10 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  placeholder="Enter Password"
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                >
+                  {showPassword ? (
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.9 5.2A10.8 10.8 0 0112 5c5 0 8.3 4.2 9 7-.3 1.1-1.1 2.3-2.2 3.4M6.2 6.2C4 7.6 2.5 9.8 2 12c.7 2.8 4 7 10 7 1.3 0 2.5-.3 3.5-.7" />
+                    </svg>
+                  ) : (
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               {formik.touched.password && formik.errors.password && (
                 <p className="mt-1 text-sm text-red-600">{formik.errors.password}</p>
               )}
@@ -110,33 +133,7 @@ const SigninPage = () => {
               Sign Up
             </Link>
           </div>
-          {/* Demo Credentials */}
-          <div className="mt-2 rounded-md border border-gray-200 bg-gray-50 p-4">
-            <div className="mb-1 text-center text-sm font-semibold text-gray-700">
-              Demo Login Credentials
-            </div>
 
-            {/* Admin */}
-            <div className="mb-1 rounded-md bg-red-50 p-1 text-xs">
-              <div className="font-semibold text-red-700">Admin</div>
-              <div className="text-gray-600">
-                Email: arun.admin@gmail.com
-              </div>
-              <div className="text-gray-600">
-                Password: Admin@123
-              </div>
-            </div>
-            {/* Student */}
-            <div className="rounded-md bg-blue-50 p-1 text-xs">
-              <div className="font-semibold text-blue-700">Student</div>
-              <div className="text-gray-600">
-                Email: arun.kumar@gmail.com
-              </div>
-              <div className="text-gray-600">
-                Password: Arun@123
-              </div>
-            </div>
-          </div>
 
         </div>
       </div>
@@ -146,4 +143,3 @@ const SigninPage = () => {
 
 
 export default SigninPage;
-
