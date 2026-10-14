@@ -24,9 +24,9 @@ export const DEPARTMENT_ENDPOINTS = {
 
 export const STUDENT_ENDPOINTS = {
   GET_ALL: "/students",
-  GET_BY_ID: (id: number ) => `/students/${id}`,
+  GET_BY_ID: (id: string ) => `/students/${id}`,
   CREATE: "/students",
-  GET_DASHBOARD_DATA :(id:number)=> `/students/student/${id}`,
+  GET_DASHBOARD_DATA :(id:number)=> `/students/student_dashboard/${id}`,
   UPDATE: (id: string | number) => `/students/${id}`,
   DELETE: (id: string | number) => `/students/${id}`,
 };

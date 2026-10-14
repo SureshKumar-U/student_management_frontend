@@ -7,7 +7,7 @@ import { fetchDepartments } from "../../store/slices/departmentSlice";
 import { fetchStudentById, updateStudent } from "../../store/slices/studentSlice";
 
 interface IStudentFormData {
-  id: string;
+  userId: string;
   name: string;
   email: string;
   phone: string;
@@ -26,7 +26,7 @@ const UpdateStudentForm = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<IStudentFormData>({
-    id: "",
+    userId: "",
     name: "",
     email: "",
     phone: "",
@@ -36,7 +36,7 @@ const UpdateStudentForm = () => {
     if (!selectedStudent) return;
     setFormData({
       ...formData,
-      id: selectedStudent?.id,
+      userId: selectedStudent?.userId,
       name: selectedStudent?.name,
       email: selectedStudent?.email,
       departmentId: selectedStudent?.department?.id,
@@ -47,7 +47,8 @@ const UpdateStudentForm = () => {
     if (!departments.length) {
       dispatch(fetchDepartments());
     }
-    dispatch(fetchStudentById(Number(id!)));
+
+    dispatch(fetchStudentById(id!))
   }, []);
 
   const handleChange = (
@@ -65,7 +66,7 @@ const UpdateStudentForm = () => {
     try {
       const res: any = await dispatch(updateStudent({
         payload: formData,
-        studentId: formData.id,
+        studentId: formData.userId,
       })).unwrap();
       toast.success(res.message);
       navigate("/admin/students");

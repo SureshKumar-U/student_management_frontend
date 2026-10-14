@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import { fetchStudentById } from "../../store/slices/studentSlice";
+import { useAppDispatch } from "../../store/store";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import type { Student } from "../../store/slices/studentSlice";
 
 interface StudentProfile {
   studentId: string;
@@ -11,54 +16,60 @@ interface StudentProfile {
 }
 
 const Profile = () => {
-  const [profile, setProfile] = useState<StudentProfile>({
-    studentId: "",
-    name: "",
-    email: "",
-    department: "",
-  });
   const auth = useSelector((state: any) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
+  const { selectedStudent: studentInfo } = useSelector(
+    (state: any) => state.students,
+  ) as { selectedStudent: Student | null };
+  const dispatch = useAppDispatch();
 
-  const [data, setData] = useState([]);
+  const formik = useFormik<StudentProfile>({
+    initialValues: {
+      studentId: "",
+      name: "",
+      email: "",
+      department: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().trim().required("Full name is required."),
+      email: Yup.string()
+        .trim()
+        .email("Enter a valid email address.")
+        .required("Email is required."),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const res = await UpdateStudentApi({
+          payload: values,
+          studentId: values.studentId,
+        });
+        toast.success(res.message);
+        setIsEditing(false);
+      } catch (err: unknown) {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to update profile.",
+        );
+      }
+    },
+  });
 
   useEffect(() => {
+    if (!auth.user?.id) return;
+    dispatch(fetchStudentById(auth.user.id));
+  }, [auth.user?.id, dispatch]);
 
-    // getStudentByUserIdApi( auth?.user?.id!).
-    // then(res=>{
-    //   setData(res.data)
-    //   setProfile({...profile, studentId:res.data.id,
-    //     name:res?.data?.user?.name,
-    //     email:res?.data?.user?.email,
-    //     department:res?.data.department?.name
-    //   })
-    // }
-    // )
-  }, [auth]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setProfile((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await UpdateStudentApi({
-        payload: profile,
-        studentId: profile.studentId,
-      });
-      toast.success(res.message);
-    } catch (err: any) {
-      toast.error(err.message);
-    }
-
-    setIsEditing(false);
-  };
+  useEffect(() => {
+    if (!studentInfo) return;
+    formik.setValues({
+      studentId: String(studentInfo.userId),
+      name: studentInfo.name ?? "",
+      email: studentInfo.email ?? "",
+      department:
+        typeof studentInfo.department === "string"
+          ? studentInfo.department
+          : studentInfo.department?.name ?? "",
+    });
+  }, [studentInfo]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -86,21 +97,23 @@ const Profile = () => {
         <div className="p-6 border-b">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold">
-              {profile.name.charAt(0)}
+              {formik.values.name.charAt(0)}
             </div>
 
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                {profile.name}
+                {formik.values.name}
               </h2>
 
-              <p className="text-sm text-gray-500">{profile.department}</p>
+              <p className="text-sm text-gray-500">
+                {formik.values.department}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Details */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={formik.handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student ID */}
             <div>
@@ -109,7 +122,7 @@ const Profile = () => {
               </label>
 
               <input
-                value={profile.studentId}
+                value={formik.values.studentId}
                 disabled
                 className="w-full px-4 py-2.5 bg-gray-100 border
                            border-gray-300 rounded-lg text-gray-500"
@@ -124,14 +137,18 @@ const Profile = () => {
 
               <input
                 name="name"
-                value={profile.name}
-                onChange={handleChange}
+                value={formik.values.name}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={!isEditing}
                 className="w-full px-4 py-2.5 border border-gray-300
                            rounded-lg outline-none
                            disabled:bg-gray-100
                            focus:ring-2 focus:ring-blue-500"
               />
+              {formik.touched.name && formik.errors.name && (
+                <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
+              )}
             </div>
 
             {/* Email */}
@@ -143,14 +160,20 @@ const Profile = () => {
               <input
                 type="email"
                 name="email"
-                value={profile.email}
-                onChange={handleChange}
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 disabled={!isEditing}
                 className="w-full px-4 py-2.5 border border-gray-300
                            rounded-lg outline-none
                            disabled:bg-gray-100
                            focus:ring-2 focus:ring-blue-500"
               />
+              {formik.touched.email && formik.errors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {formik.errors.email}
+                </p>
+              )}
             </div>
 
             {/* Department */}
@@ -160,7 +183,7 @@ const Profile = () => {
               </label>
 
               <input
-                value={profile.department}
+                value={formik.values.department}
                 disabled
                 className="w-full px-4 py-2.5 bg-gray-100 border
                            border-gray-300 rounded-lg text-gray-500"
@@ -173,7 +196,10 @@ const Profile = () => {
             <div className="flex justify-end gap-3 pt-4 border-t">
               <button
                 type="button"
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  formik.resetForm();
+                  setIsEditing(false);
+                }}
                 className="px-5 py-2.5 border border-gray-300
                            text-gray-700 rounded-lg hover:bg-gray-50"
               >
@@ -182,8 +208,9 @@ const Profile = () => {
 
               <button
                 type="submit"
+                disabled={formik.isSubmitting}
                 className="px-5 py-2.5 bg-blue-600 text-white
-                           rounded-lg hover:bg-blue-700"
+                           rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 Save Changes
               </button>

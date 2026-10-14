@@ -25,7 +25,7 @@ export interface DeletePopupProps {
 }
 
 export interface User {
-  id: number;
+  id: string | number;
   token: string;
   name: string;
   email: string;

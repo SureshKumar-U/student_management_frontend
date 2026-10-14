@@ -13,6 +13,7 @@ import * as ErrorMessages from "../../constants/errorConstants";
 
 export interface Student {
   id: number | string;
+  userId?:number | string;
   name?: string;
   email?: string;
   phone?: string;
@@ -69,7 +70,6 @@ export const fetchStudentDashboardDetails = createAsyncThunk(
   async (userId :number, { rejectWithValue }) => {
     try {
       const response = await getStudentDashboardData(userId);
-  
       if (!response?.data) {
         return rejectWithValue("Student was not found.");
       }
@@ -87,9 +87,11 @@ export const fetchStudentDashboardDetails = createAsyncThunk(
 
 export const fetchStudentById = createAsyncThunk(
   `${sliceName}/fetchById`,
-  async (studentId: number, { rejectWithValue }) => {
+  async (userId: string, { rejectWithValue }) => {
     try {
-      const response = await getStudentApi(studentId);
+
+  
+      const response = await getStudentApi(userId);
       if (!response?.data) {
         return rejectWithValue("Student was not found.");
       }

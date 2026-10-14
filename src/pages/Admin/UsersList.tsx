@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import { useAppDispatch } from "../../store/store";
 import { fetchUsers, type User } from "../../store/slices/userSlice";
-import { Link } from "react-router-dom";
 
 const UserList = () => {
   const dispatch = useAppDispatch();
@@ -72,14 +71,14 @@ const UserList = () => {
                   </td>
                 </tr>
               )}
-              {users.map((user :any, index:number) => (
-                <tr key={index+ 1} className="hover:bg-gray-50">
+              {users.map((user: any, index: number) => (
+                <tr key={index + 1} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {user.name}
                   </td>
                   <td className="px-6 py-4">
                     <span
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${roleClasses[user?.role as User["role"]] }`}
+                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${roleClasses[user?.role as User["role"]]}`}
                     >
                       {user.role}
                     </span>

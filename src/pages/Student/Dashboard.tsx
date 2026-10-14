@@ -11,9 +11,10 @@ const Dashboard = () => {
   const dispatch = useAppDispatch();
    
   useEffect(() => {
-    if(!auth.user.id) return
+    const userId = auth?.user?.id
+    if(!userId) return
     dispatch(fetchStudentDashboardDetails(auth?.user?.id!))
-  }, [auth]);
+  }, [auth?.user?.id]);
 
   return (
     <div className="space-y-8">

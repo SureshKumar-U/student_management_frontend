@@ -9,6 +9,7 @@ import { deleteStudent, getAllStudents } from "../../store/slices/studentSlice";
 const StudentList = () => {
   const { students } = useSelector((state: any) => state.students);
   const [showDelete, setShowDelete] = useState(false);
+  
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
     null,
   );
@@ -90,7 +91,7 @@ const StudentList = () => {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <Link
-                        to={`edit/${student.id}`}
+                        to={`edit/${student.userId}`}
                         className="text-green-600 hover:text-green-800 font-medium"
                       >
                         Edit

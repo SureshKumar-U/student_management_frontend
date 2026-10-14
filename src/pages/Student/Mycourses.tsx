@@ -17,6 +17,9 @@ const MyCourses = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // const userId = auth?.user?.id
+    // if(!userId) return
+    
     getAllMyCoursesApi(auth?.user?.id!).then((res) => {
       if (res?.data?.length == 0) {
         return;
@@ -32,13 +35,14 @@ const MyCourses = () => {
       });
       setCourses(courses);
     });
-  }, [auth]);
+  }, []);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">My Courses</h1>
+
         <p className="mt-1 text-sm text-gray-500">
           Courses you are currently enrolled in.
         </p>
@@ -50,13 +54,16 @@ const MyCourses = () => {
       >
         + Add Course
       </button>
+
       {/* Course count */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <p className="text-sm text-gray-500">Total Courses</p>
+
         <p className="mt-1 text-3xl font-bold text-gray-900">
           {courses.length}
         </p>
       </div>
+
       {/* Courses Table */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
@@ -64,14 +71,17 @@ const MyCourses = () => {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-6 py-4 font-semibold text-gray-600">Code</th>
+
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Course Name
                 </th>
+
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Department
                 </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-100">
               {courses.map((course) => (
                 <tr key={course.id} className="hover:bg-gray-50">
@@ -84,9 +94,11 @@ const MyCourses = () => {
                       {course.code}
                     </span>
                   </td>
+
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {course.name}
                   </td>
+
                   <td className="px-6 py-4 text-gray-500">
                     {course.department}
                   </td>

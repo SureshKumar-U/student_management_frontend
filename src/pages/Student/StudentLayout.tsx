@@ -21,6 +21,7 @@ const StudentLayout = () => {
       path: "/student/courses",
     },
   ];
+  
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
