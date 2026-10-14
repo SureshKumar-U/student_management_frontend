@@ -60,16 +60,20 @@ const Profile = () => {
 
   useEffect(() => {
     if (!studentInfo) return;
-    formik.setValues({
-      studentId: String(studentInfo.userId),
-      name: studentInfo.name ?? "",
-      email: studentInfo.email ?? "",
-      department:
-        typeof studentInfo.department === "string"
-          ? studentInfo.department
-          : studentInfo.department?.name ?? "",
-    });
+    setFormIntialValues();
   }, [studentInfo]);
+
+  const setFormIntialValues = () => {
+    formik.setValues({
+      studentId: String(studentInfo?.userId),
+      name: studentInfo?.name ?? "",
+      email: studentInfo?.email ?? "",
+      department:
+        typeof studentInfo?.department === "string"
+          ? studentInfo.department
+          : (studentInfo?.department?.name ?? ""),
+    });
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -97,12 +101,12 @@ const Profile = () => {
         <div className="p-6 border-b">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold">
-              {formik.values.name.charAt(0)}
+              {studentInfo?.name?.charAt(0)}
             </div>
 
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
-                {formik.values.name}
+                {studentInfo?.name}
               </h2>
 
               <p className="text-sm text-gray-500">
@@ -111,7 +115,6 @@ const Profile = () => {
             </div>
           </div>
         </div>
-
         {/* Details */}
         <form onSubmit={formik.handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -147,7 +150,9 @@ const Profile = () => {
                            focus:ring-2 focus:ring-blue-500"
               />
               {formik.touched.name && formik.errors.name && (
-                <p className="mt-1 text-sm text-red-600">{formik.errors.name}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {formik.errors.name}
+                </p>
               )}
             </div>
 
@@ -197,7 +202,7 @@ const Profile = () => {
               <button
                 type="button"
                 onClick={() => {
-                  formik.resetForm();
+                  setFormIntialValues();
                   setIsEditing(false);
                 }}
                 className="px-5 py-2.5 border border-gray-300

@@ -19,6 +19,8 @@ const StudentList = () => {
     dispatch(getAllStudents());
   }, []);
 
+  console.log(students)
+
   const handleDelete = async () => {
     try {
       const res: any = await dispatch(
@@ -80,7 +82,7 @@ const StudentList = () => {
               )}
               {students?.map((student: any) => (
                 <tr key={student.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 text-gray-500">{student.id}</td>
+                  <td className="px-6 py-4 text-gray-500">{student.userId}</td>
                   <td className="px-6 py-4 font-medium text-gray-900">
                     {student.name}
                   </td>

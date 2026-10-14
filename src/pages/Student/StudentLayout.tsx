@@ -31,7 +31,6 @@ const StudentLayout = () => {
         <div className="h-16 flex items-center px-6 border-b border-slate-700">
           <h1 className="text-lg font-bold">Student Portal</h1>
         </div>
-
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => {

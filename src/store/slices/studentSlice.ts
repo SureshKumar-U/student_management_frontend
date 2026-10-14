@@ -13,7 +13,7 @@ import * as ErrorMessages from "../../constants/errorConstants";
 
 export interface Student {
   id: number | string;
-  userId?:number | string;
+  userId?: number | string;
   name?: string;
   email?: string;
   phone?: string;
@@ -67,7 +67,7 @@ const sliceName: string = "students";
 
 export const fetchStudentDashboardDetails = createAsyncThunk(
   `${sliceName}/fetchStudentDashboard`,
-  async (userId :number, { rejectWithValue }) => {
+  async (userId: number, { rejectWithValue }) => {
     try {
       const response = await getStudentDashboardData(userId);
       if (!response?.data) {
@@ -89,8 +89,6 @@ export const fetchStudentById = createAsyncThunk(
   `${sliceName}/fetchById`,
   async (userId: string, { rejectWithValue }) => {
     try {
-
-  
       const response = await getStudentApi(userId);
       if (!response?.data) {
         return rejectWithValue("Student was not found.");
@@ -160,7 +158,7 @@ export const fetchMyCourses = createAsyncThunk(
   },
 );
 
-export const enrollStudentInCourse = createAsyncThunk(
+export const addCourseToStudent = createAsyncThunk(
   `${sliceName}/enrollInCourse`,
   async (
     { userId, courseId }: { userId: number; courseId: number | string },
@@ -276,14 +274,14 @@ const studentSlice = createSlice({
           action.error.message ??
           "Unable to load enrolled courses.";
       })
-      .addCase(enrollStudentInCourse.pending, (state) => {
+      .addCase(addCourseToStudent.pending, (state) => {
         state.enrollmentStatus = "loading";
         state.error = null;
       })
-      .addCase(enrollStudentInCourse.fulfilled, (state) => {
+      .addCase(addCourseToStudent.fulfilled, (state) => {
         state.enrollmentStatus = "succeeded";
       })
-      .addCase(enrollStudentInCourse.rejected, (state, action) => {
+      .addCase(addCourseToStudent.rejected, (state, action) => {
         state.enrollmentStatus = "failed";
         state.error =
           (action.payload as string | undefined) ??

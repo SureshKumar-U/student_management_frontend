@@ -28,7 +28,7 @@ const makeApiRequest = async (
     const baseUrl: string = API_BASE_URL;
     const jwtToken: string = store.getState()?.auth?.user?.token || "";
     const headers = new Headers(config.headers);
-    if (jwtToken) {
+    if (jwtToken && !headers.has("Authorization")) {
       headers.set("Authorization", `Bearer ${jwtToken}`);
     }
     const url = `${baseUrl}${path}`;
