@@ -40,7 +40,6 @@ const makeApiRequest = async (
         headers,
         mode: "cors",
       });
-      console.log("makeApiRequest response", response);
     } catch (fetchError: unknown) {
       if (fetchError instanceof Error) {
         if (fetchError.name === "AbortError") {

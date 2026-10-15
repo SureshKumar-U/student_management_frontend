@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { addCourseToStudentApi } from "../../services/StudentService";
 import { useNavigate } from "react-router-dom";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { fetchAllCourses } from "../../store/slices/courseSlice";
 import { useAppDispatch } from "../../store/store";
-
+import { addCourseToStudent } from "../../store/slices/studentSlice";
 
 const AddCourse = () => {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const navigate = useNavigate();
   const { courses } = useSelector((state: any) => state.courses);
-  const auth = useSelector((state:any)=>state.auth)
+  const auth = useSelector((state: any) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,14 +25,16 @@ const AddCourse = () => {
     }
     const payload: any = {
       courseId: selectedCourseId,
+      userId: auth?.user?.id,
     };
 
     try {
-      const res: any = await addCourseToStudentApi( payload);
+      const res: any = await dispatch(addCourseToStudent(payload)).unwrap();
+      console.log(res);
       toast.success(res.message);
       navigate("/student/courses");
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err);
     } finally {
       setSelectedCourseId("");
     }
@@ -60,21 +61,23 @@ const AddCourse = () => {
             >
               Select Course
             </label>
-
             <select
               id="course"
               value={selectedCourseId}
               onChange={(e) => setSelectedCourseId(e.target.value)}
-              className="w-full rounded-lg border border-gray-300
+              className="w-full cursor-pointer rounded-lg border border-gray-300
                          px-4 py-2.5 text-sm
                          focus:border-blue-500 focus:ring-2
                          focus:ring-blue-200 outline-none"
             >
               <option value="">-- Select Course --</option>
-
-              {courses?.map((course:any) => (
-                <option key={course.id} value={course.id}>
-                  {course.name}
+              {courses?.map((course: any) => (
+                <option
+                  className="cursor-pointer"
+                  key={course.id}
+                  value={course.id}
+                >
+                  {course?.name}
                 </option>
               ))}
             </select>
@@ -93,7 +96,7 @@ const AddCourse = () => {
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600
+            className="cursor-pointer w-full rounded-lg bg-blue-600
                        px-4 py-2.5 text-white font-medium
                        hover:bg-blue-700 transition"
           >
@@ -104,5 +107,6 @@ const AddCourse = () => {
     </div>
   );
 };
+
 
 export default AddCourse;

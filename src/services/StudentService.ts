@@ -1,4 +1,4 @@
-import { STUDENT_ENDPOINTS } from "../constants/apiConstants";
+import { COURSE_ENROLLEMENT, STUDENT_ENDPOINTS } from "../constants/apiConstants";
 import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
 import makeApiRequest from "./MakeApiRequest";
 import * as ErrorMessages from "../constants/errorConstants";
@@ -99,7 +99,8 @@ export const deleteStudentById = async (
 
 
 export const addCourseToStudentApi = async (payload: any): Promise<any> => {
-  const response = await makeApiRequest(`/students/student_enrollment`, {
+  console.log("addCourseToapi calling")
+  const response = await makeApiRequest(COURSE_ENROLLEMENT.ENROLL, {
     method: "POST",
     body: JSON.stringify(payload),
     headers: {

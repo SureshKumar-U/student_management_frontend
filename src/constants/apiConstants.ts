@@ -31,3 +31,9 @@ export const STUDENT_ENDPOINTS = {
   DELETE: (id: string | number) => `/students/${id}`,
 };
 
+
+export const COURSE_ENROLLEMENT = {
+  ENROLL: "/student_enrollment"
+}
+
+

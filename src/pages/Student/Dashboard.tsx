@@ -7,14 +7,16 @@ import { useAppDispatch } from "../../store/store";
 const Dashboard = () => {
   const auth = useSelector((state: any) => state.auth);
 
-  const {dashboardDetails:studentInfo} = useSelector((state:any)=>state.students)
+  const { dashboardDetails: studentInfo } = useSelector(
+    (state: any) => state.students,
+  );
   const dispatch = useAppDispatch();
-   
+
   useEffect(() => {
-    const userId = auth?.user?.id
-    if(!auth.user.id) return
-    dispatch(fetchStudentDashboardDetails(auth?.user?.id!))
-  }, [auth.user?.id]);
+    const userId = auth?.user?.id;
+    if (!userId) return;
+    dispatch(fetchStudentDashboardDetails(userId));
+  }, [auth?.user?.id]);
 
   return (
     <div className="space-y-8">
@@ -34,7 +36,9 @@ const Dashboard = () => {
         {/* Student ID */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <p className="text-sm font-medium text-gray-500">Student ID</p>
-          <p className="mt-2 text-xs font-bold text-gray-900">{studentInfo?.id!}</p>
+          <p className="mt-2 text-xs font-bold text-gray-900">
+            {studentInfo?.id!}
+          </p>
         </div>
         {/* Department */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
