@@ -22,8 +22,6 @@ export const getAllStudentsApi = async (): Promise<any> => {
   return data;
 };
 
-
-
 export const getStudentApi = async (userId: string): Promise<any> => {
   const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_BY_ID(userId), {
     method: "GET",
@@ -31,13 +29,13 @@ export const getStudentApi = async (userId: string): Promise<any> => {
       "Content-Type": "application/json",
     },
   });
-
+  const data = await response.json();
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Request failed");
+    throw new Error(extractApiErrorMessage(data,ErrorMessages.ERR_FAILED_TO_FETCH_STUDENT));
+     
   }
 
-  return await response.json();
+  return data;
 };
 
 export const UpdateStudentApi = async ({
@@ -95,7 +93,7 @@ export const addCourseToStudentApi = async (payload: any): Promise<any> => {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(extractApiErrorMessage(data, "Failed to enroll course"));
+    throw new Error(extractApiErrorMessage(data, ErrorMessages.ERR_FAILED_TO_ENROLL_COURSE_TO_STUDENT));
   }
   return data;
 };

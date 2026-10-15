@@ -10,7 +10,8 @@ const NotFoundPage = () => {
           Page not found
         </h1>
         <p className="mt-4 text-base text-gray-600">
-          The page you are looking for doesn&apos;t exist or may have been moved.
+          The page you are looking for doesn&apos;t exist or may have been
+          moved.
         </p>
         <Link
           to={paths.home}
