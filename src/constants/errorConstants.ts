@@ -29,6 +29,8 @@ export const ERR_FAILED_TO_FETCH_STUDENT_COURSES = "Failed to fetch enrolled cou
 export const ERR_FAILED_TO_FETCH_ALL_STUDENTS = "Failed to fetch all students.";
 export const ERR_FAILED_TO_ENROLL_STUDENT = "Failed to enroll student in course.";
 export const ERR_FAILED_TO_DELETE_STUDENT = "Failed to delete student.";
+export const ERR_FAILED_TO_FETCH_ADMIN_DASHBOARD_STATS = "Failed to fetch admin dashboard statistics.";
+export const ERR_FAILED_TO_FETCH_RECENT_STUDENTS = "Failed to fetch recent students.";
 
 export const VALIDATION_LIMITS = {
   TEXT_MIN: 3,

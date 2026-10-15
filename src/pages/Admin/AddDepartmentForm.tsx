@@ -14,7 +14,6 @@ const DepartmentForm = () => {
     code: "",
   });
   const dispatch = useAppDispatch();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -22,7 +21,6 @@ const DepartmentForm = () => {
       toast.success(response);
       navigate("/admin/departments");
     } catch (err: any) {
-      console.log(err);
       toast.error(err);
     }
   };
@@ -36,19 +34,16 @@ const DepartmentForm = () => {
         >
           ← Back to Departments
         </Link>
-
         <h1 className="mt-3 text-2xl font-bold text-gray-900">
           Add Department
         </h1>
       </div>
-
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Department Name
             </label>
-
             <input
               type="text"
               value={formData.name}
@@ -60,12 +55,10 @@ const DepartmentForm = () => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Code
             </label>
-
             <input
               type="text"
               value={formData.code}
@@ -77,7 +70,6 @@ const DepartmentForm = () => {
               className="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Link
               to="/admin/departments"
@@ -85,7 +77,6 @@ const DepartmentForm = () => {
             >
               Cancel
             </Link>
-
             <button
               type="submit"
               className="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"

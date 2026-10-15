@@ -21,12 +21,10 @@ const AdminLayout = () => {
         <div className="h-16 flex items-center px-6 border-b border-slate-700">
           <h1 className="text-lg font-bold">Student Management</h1>
         </div>
-
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => {
-            const isActive = location.pathname === item.path;
-
+            const isActive = location?.pathname === item.path;
             return (
               <Link
                 key={item.path}
@@ -42,7 +40,6 @@ const AdminLayout = () => {
             );
           })}
         </nav>
-
         {/* Logout */}
         <div className="p-4 border-t border-slate-700">
           <button
@@ -53,13 +50,11 @@ const AdminLayout = () => {
           </button>
         </div>
       </aside>
-
       {/* Main Content */}
       <main className="flex-1 overflow-auto">
         {/* Topbar */}
         <header className="h-16 bg-white border-b flex items-center justify-between px-8">
           <h2 className="text-lg font-semibold text-gray-800">Admin Panel</h2>
-
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
               A

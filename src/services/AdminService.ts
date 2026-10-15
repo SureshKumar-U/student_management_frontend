@@ -12,9 +12,9 @@ export const getAdminDashboardStats = async (): Promise<any> => {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    throw new Error(extractApiErrorMessage(data,ErrorMessages.ERR_FAILED_TO_FETCH_ADMIN_DASHBOARD_STATS))
   }
-  return await data;
+  return  data;
 };
 
 
@@ -27,7 +27,7 @@ export const getRecentStudentsApi = async (): Promise<any> => {
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.message || "Request failed");
+    throw new Error(extractApiErrorMessage(data,ErrorMessages.ERR_FAILED_TO_FETCH_RECENT_STUDENTS) );
   }
-  return await data;
+  return  data;
 };

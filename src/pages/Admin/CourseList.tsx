@@ -18,9 +18,8 @@ const CourseList = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null)
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    //clear previous state to prevent stale data
 
+  useEffect(() => {
     dispatch(fetchAllCourses())
   }, [])
 
@@ -29,7 +28,6 @@ const CourseList = () => {
       const res = await dispatch(deleteCourse(selectedCourseId!)).unwrap()
       toast.success(res)
       await dispatch(fetchAllCourses())
-
     } catch (err: any) {
       toast.error(err?.message!)
     }
@@ -37,9 +35,7 @@ const CourseList = () => {
       setShowDelete(false);
       setSelectedCourseId(null);
     }
-
   };
-
 
   return (
     <div className="space-y-6">
@@ -67,20 +63,16 @@ const CourseList = () => {
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Code
                 </th>
-
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Course
                 </th>
-
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Department
                 </th>
-
                 <th className="px-6 py-4 font-semibold text-gray-600">
                   Actions
                 </th>
               </tr>
-
             </thead>
             <tbody className="divide-y divide-gray-100">
               {!courses?.length &&

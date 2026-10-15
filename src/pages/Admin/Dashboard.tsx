@@ -5,7 +5,6 @@ import {
   fetchRecentStudents,
 } from "../../store/slices/adminSlice";
 import { useAppDispatch, type RootState } from "../../store/store";
-import { object } from "yup";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -20,14 +19,13 @@ const Dashboard = () => {
   } = useSelector((state: RootState) => state.adminDashboard);
 
 
+
+
   useEffect(() => {
     if (!token) return;
     dispatch(fetchAdminDashboardStats());
     dispatch(fetchRecentStudents());
   }, [dispatch, token]);
-
-
-
 
   return (
     <div className="space-y-8">
@@ -100,13 +98,13 @@ const Dashboard = () => {
                 )}
               {recentStudents?.map((student:any, index:number) => (
                 <tr
-                  key={`${student.email}-${index}`}
+                  key={`${student?.email}-${index}`}
                   className="hover:bg-gray-50"
                 >
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {student?.user?.name}
+                    {student?.name}
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{student.user?.email}</td>
+                  <td className="px-6 py-4 text-gray-500">{student?.email}</td>
                   <td className="px-6 py-4 text-gray-500">
                     {student?.department?.name || "N/A"}
                   </td>
