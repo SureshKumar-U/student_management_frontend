@@ -1,42 +1,33 @@
-import {  useEffect, useState } from "react";
-import {
-  getAdminDashboardStats,
-  getRecentStudentsApi,
-} from "../../services/AdminService";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import {
+  fetchAdminDashboardStats,
+  fetchRecentStudents,
+} from "../../store/slices/adminSlice";
+import { useAppDispatch, type RootState } from "../../store/store";
+import { object } from "yup";
 
-interface IRecentStudent {
-  email: string;
-  department: string;
-  name: string;
-}
 const Dashboard = () => {
-  const auth = useSelector((state: any) => state.auth);
-  const token = auth?.user?.token;
-  const [dashboardStats, setDashboardStats] = useState<
-    Record<string, string | number>
-  >({});
-  const [recentStudents, setRecentStudents] = useState<IRecentStudent[]>([]);
+  const dispatch = useAppDispatch();
+  const token = useSelector((state: RootState) => state.auth.user?.token);
+  const {
+    stats: dashboardStats,
+    recentStudents,
+    statsStatus,
+    recentStudentsStatus,
+    statsError,
+    recentStudentsError,
+  } = useSelector((state: RootState) => state.adminDashboard);
+
 
   useEffect(() => {
     if (!token) return;
-    getAdminDashboardStats(token).then((res) => {
-      setDashboardStats(res.data);
-    });
+    dispatch(fetchAdminDashboardStats());
+    dispatch(fetchRecentStudents());
+  }, [dispatch, token]);
 
-    getRecentStudentsApi(token).then((res: any) => {
-      if (res?.data?.length > 0) {
-        const students: IRecentStudent[] = res?.data?.map((st: any) => {
-          return {
-            department: st.department ? st.department.name : "NA",
-            email: st.user.email,
-            name: st.user.name,
-          };
-        });
-        setRecentStudents(students);
-      }
-    });
-  }, [token]);
+
+
 
   return (
     <div className="space-y-8">
@@ -44,9 +35,13 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="mt-1 text-sm text-gray-500">Welcome back, Admin.</p>
       </div>
+      {statsError && <p className="text-sm text-red-600">{statsError}</p>}
       {/* Statistics */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        {Object.entries(dashboardStats)?.map(([item, val]: any) => (
+        {statsStatus === "loading" && (
+          <p className="text-sm text-gray-500">Loading dashboard statistics...</p>
+        )}
+        {Object.entries(dashboardStats).map(([item, value]:any) => (
           <div
             key={item}
             className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm"
@@ -54,11 +49,9 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">{item}</p>
-                <p className="mt-2 text-xl font-bold text-gray-900">{val}</p>
+                <p className="mt-2 text-xl font-bold text-gray-900">{value}</p>
               </div>
-              <div
-                className={`w-12 h-12 rounded-lg  bg-blue-600 flex items-center justify-center text-white`}
-              >
+              <div className="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center text-white">
                 {item.charAt(0)}
               </div>
             </div>
@@ -82,34 +75,43 @@ const Dashboard = () => {
                 <th className="px-6 py-4 font-medium">Department</th>
               </tr>
             </thead>
-
             <tbody className="divide-y divide-gray-100">
-              {!recentStudents?.length && (
+              {recentStudentsError && (
                 <tr>
-                  <td colSpan={3} className=" text-center py-4">
-                    No Students created yet
+                  <td colSpan={3} className="text-center py-4 text-red-600">
+                    {recentStudentsError}
                   </td>
                 </tr>
               )}
-              {recentStudents?.length > 0 && (
-                <>
-                  {recentStudents.map((st: any, index: number) => {
-                    return (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 font-medium text-gray-900">
-                          {st?.name}
-                        </td>
-
-                        <td className="px-6 py-4 text-gray-500">{st?.email}</td>
-
-                        <td className="px-6 py-4 text-gray-500">
-                          {st?.department || "NA"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </>
+              {recentStudentsStatus === "loading" && (
+                <tr>
+                  <td colSpan={3} className="text-center py-4">
+                    Loading recent students...
+                  </td>
+                </tr>
               )}
+              {recentStudentsStatus === "succeeded" &&
+                recentStudents.length === 0 && (
+                  <tr>
+                    <td colSpan={3} className="text-center py-4">
+                      No Students created yet
+                    </td>
+                  </tr>
+                )}
+              {recentStudents?.map((student:any, index:number) => (
+                <tr
+                  key={`${student.email}-${index}`}
+                  className="hover:bg-gray-50"
+                >
+                  <td className="px-6 py-4 font-medium text-gray-900">
+                    {student?.user?.name}
+                  </td>
+                  <td className="px-6 py-4 text-gray-500">{student.user?.email}</td>
+                  <td className="px-6 py-4 text-gray-500">
+                    {student?.department?.name || "N/A"}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

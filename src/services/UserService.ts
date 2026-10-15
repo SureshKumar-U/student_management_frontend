@@ -53,5 +53,5 @@ export const getAllUsersApi = async (): Promise<any> => {
         ErrorMessages.ERR_FETCH_USERS_LIST(response.statusText),
       ),
     );
-  return await data;
+  return  data;
 };

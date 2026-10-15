@@ -2,11 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addCourseToStudentApi,
   getAllMyCoursesApi,
-  getStudentDashboardData,
   getAllStudentsApi,
   UpdateStudentApi,
   deleteStudentById,
   getStudentApi,
+  getStudentDashboardData,
 } from "../../services/StudentService";
 import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
 import * as ErrorMessages from "../../constants/errorConstants";

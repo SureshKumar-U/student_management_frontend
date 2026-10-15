@@ -1,31 +1,12 @@
 import makeApiRequest from "./MakeApiRequest";
 import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
 import * as ErrorMessages from "../constants/errorConstants";
+import { DASHBOARD_ENDPOINTS, STUDENT_ENDPOINTS } from "../constants/apiConstants";
 
-
-
-const BASEAPI_URL = "http://localhost:5180/api/v1";
-
-export const getAdminDashboardStats = async (token: string): Promise<any> => {
-  const response = await makeApiRequest(`/admin/dashboard/stats`, {
+export const getAdminDashboardStats = async (): Promise<any> => {
+  const response = await makeApiRequest(DASHBOARD_ENDPOINTS.GET_ADMIN_DASHBOARD, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed");
-  }
-  return await data;
-};
-
-export const getRecentStudentsApi = async (token: string): Promise<any> => {
-  const response = await fetch(`${BASEAPI_URL}/students/recent`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   });
@@ -37,4 +18,16 @@ export const getRecentStudentsApi = async (token: string): Promise<any> => {
 };
 
 
-
+export const getRecentStudentsApi = async (): Promise<any> => {
+  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_RECENT_STUDENTS, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+  return await data;
+};

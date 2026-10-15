@@ -1,4 +1,4 @@
-import { COURSE_ENROLLEMENT, STUDENT_ENDPOINTS } from "../constants/apiConstants";
+import { COURSE_ENROLLEMENT, DASHBOARD_ENDPOINTS, STUDENT_ENDPOINTS } from "../constants/apiConstants";
 import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
 import makeApiRequest from "./MakeApiRequest";
 import * as ErrorMessages from "../constants/errorConstants";
@@ -22,24 +22,7 @@ export const getAllStudentsApi = async (): Promise<any> => {
   return data;
 };
 
-export const  getStudentDashboardData = async (userId: number): Promise<any> => {
-  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_DASHBOARD_DATA(userId), {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_FETCH_ALL_STUDENTS,
-      ),
-    );
-  }
-  return data;
-};
+
 
 export const getStudentApi = async (userId: string): Promise<any> => {
   const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_BY_ID(userId), {
@@ -98,6 +81,9 @@ export const deleteStudentById = async (
 };
 
 
+
+
+
 export const addCourseToStudentApi = async (payload: any): Promise<any> => {
   console.log("addCourseToapi calling")
   const response = await makeApiRequest(COURSE_ENROLLEMENT.ENROLL, {
@@ -128,3 +114,21 @@ export const getAllMyCoursesApi = async (userId: number): Promise<any> => {
   return data;
 };
 
+export const  getStudentDashboardData = async (userId: number): Promise<any> => {
+  const response = await makeApiRequest(DASHBOARD_ENDPOINTS.GET_STUDENT_DASHBOARD(userId), {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(
+      extractApiErrorMessage(
+        data,
+        ErrorMessages.ERR_FAILED_TO_FETCH_ALL_STUDENTS,
+      ),
+    );
+  }
+  return data;
+};

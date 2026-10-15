@@ -5,6 +5,7 @@ import userReducer from "./slices/userSlice";
 import courseReducer from "./slices/courseSlice";
 import departmentReducer from "./slices/departmentSlice";
 import studentReducer from "./slices/studentSlice";
+import adminDashboardReducer from "./slices/adminSlice";
 // import storage from 'redux-persist/lib/storage'
 import storage from "redux-persist/es/storage/session";
 import persistReducer from "redux-persist/es/persistReducer";
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   courses: courseReducer,
   departments: departmentReducer,
   students: studentReducer,
+  adminDashboard: adminDashboardReducer,
 });
 
 const persistConfig = {
