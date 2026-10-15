@@ -18,14 +18,16 @@ import AddCourse from "../pages/Student/AddCourse";
 import MyCourses from "../pages/Student/Mycourses";
 import StudentDashboard from "../pages/Student/Dashboard";
 import StudentProfile from "../pages/Student/Profile";
+import NotFoundPage from "../pages/NotFoundPage";
 import ProtectedRoute from "./ProtectedRoute";
 import { Roles } from "../Types";
+
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path={paths.home} element={<SigninPage />} />
       <Route path={paths.signup} element={<SignUpPage />} />
-
+ 
       <Route
         path={paths.admin.root}
         element={
@@ -67,6 +69,7 @@ const AppRoutes = () => {
         <Route path={paths.student.courses} element={<MyCourses />} />
         <Route path={paths.student.addCourse} element={<AddCourse />} />
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

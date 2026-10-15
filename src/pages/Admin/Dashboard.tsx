@@ -27,6 +27,8 @@ const Dashboard = () => {
     dispatch(fetchRecentStudents());
   }, [dispatch, token]);
 
+
+
   return (
     <div className="space-y-8">
       <div>
