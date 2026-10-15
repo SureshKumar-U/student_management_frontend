@@ -18,13 +18,22 @@ import AddCourse from "../pages/Student/AddCourse";
 import MyCourses from "../pages/Student/Mycourses";
 import StudentDashboard from "../pages/Student/Dashboard";
 import StudentProfile from "../pages/Student/Profile";
+import ProtectedRoute from "./ProtectedRoute";
+import { Roles } from "../Types";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path={paths.home} element={<SigninPage />} />
       <Route path={paths.signup} element={<SignUpPage />} />
 
-      <Route path={paths.admin.root} element={<AdminLayout />}>
+      <Route
+        path={paths.admin.root}
+        element={
+          <ProtectedRoute allowedRoles={[Roles.Admin]}>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path={paths.admin.dashboard} element={<AdminDashboard />} />
 
         <Route path={paths.admin.students} element={<StudentList />} />
