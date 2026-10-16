@@ -54,12 +54,11 @@ export const signUpUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : "Unable to sign up",
+        extractApiErrorMessage(error, ErrorMessages.ERR_REGISTER_FAILED),
       );
     }
   },
 );
-
 
 const authSlice = createSlice({
   name: "auth",
@@ -99,6 +98,8 @@ const authSlice = createSlice({
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.status = "failed";
+        state.error =
+          action.payload ?? action.error.message ?? "Unable to log in";
       });
   },
 });

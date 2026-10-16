@@ -67,9 +67,6 @@ export const fetchCourseById = createAsyncThunk(
   async (id: string, { rejectWithValue }) => {
     try {
       const response = await getCourseByIdApi(id);
-      if (!response?.data) {
-        return rejectWithValue("Course was not found.");
-      }
       return response.data as Course;
     } catch (error) {
       return rejectWithValue(
@@ -121,7 +118,10 @@ export const deleteCourse = createAsyncThunk(
       return res.message;
     } catch (error) {
       return rejectWithValue(
-        error instanceof Error ? error.message : "Unable to delete course.",
+        extractApiErrorMessage(
+          error,
+          ErrorMessages.ERR_FAILED_TO_DELETE_COURSE,
+        ),
       );
     }
   },
@@ -179,12 +179,7 @@ const courseSlice = createSlice({
       })
       .addCase(updateCourse.fulfilled, (state, action) => {
         state.updateStatus = "succeeded";
-        const index = state.courses.findIndex(
-          (course) => course.id === action.payload.id,
-        );
-        if (index !== -1) {
-          state.courses[index] = action.payload;
-        }
+        state.error = null;
       })
       .addCase(updateCourse.rejected, (state, action) => {
         state.updateStatus = "failed";
@@ -197,9 +192,8 @@ const courseSlice = createSlice({
       })
       .addCase(deleteCourse.fulfilled, (state, action) => {
         state.deleteStatus = "succeeded";
-        state.courses = state.courses.filter(
-          (course) => course.id !== action.payload,
-        );
+        state.error = null;
+
       })
       .addCase(deleteCourse.rejected, (state, action) => {
         state.deleteStatus = "failed";

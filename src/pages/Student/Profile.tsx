@@ -3,7 +3,7 @@ import { UpdateStudentApi } from "../../services/StudentService";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { fetchStudentById } from "../../store/slices/studentSlice";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import type { Student } from "../../store/slices/studentSlice";
@@ -16,10 +16,10 @@ interface StudentProfile {
 }
 
 const Profile = () => {
-  const auth = useSelector((state: any) => state.auth);
+  const auth = useSelector((state: RootState) => state.auth);
   const [isEditing, setIsEditing] = useState(false);
   const { selectedStudent: studentInfo } = useSelector(
-    (state: any) => state.students,
+    (state: RootState) => state.students,
   ) as { selectedStudent: Student | null };
   const dispatch = useAppDispatch();
 

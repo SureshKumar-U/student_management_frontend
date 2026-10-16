@@ -1,10 +1,11 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useAuth from "../../utils/hooks/useAuth";
+import type { RootState } from "../../store/store";
 
 const StudentLayout = () => {
   const location = useLocation();
-  const { user } = useSelector((state: any) => state.auth)!;
+  const { user } = useSelector((state: RootState) => state.auth)!;
   const {signOut} = useAuth()
 
   const menuItems = [

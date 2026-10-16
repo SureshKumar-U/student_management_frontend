@@ -4,7 +4,7 @@ import DeletePopup from "../../components/Popup";
 import { toast } from "react-toastify";
 import {  useSelector } from "react-redux";
 import { fetchAllCourses,deleteCourse } from "../../store/slices/courseSlice";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 
 interface ICourse {
   id: number;
@@ -14,7 +14,7 @@ interface ICourse {
 }
 
 const CourseList = () => {
-  const {courses} = useSelector((state:any)=>state.courses)
+  const {courses} = useSelector((state:RootState)=>state.courses)
   const [showDelete, setShowDelete] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null)
   const dispatch = useAppDispatch();

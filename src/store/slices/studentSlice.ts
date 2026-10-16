@@ -134,7 +134,7 @@ export const deleteStudent = createAsyncThunk(
       return rejectWithValue(
         extractApiErrorMessage(
           error,
-          ErrorMessages.ERR_FAILED_TO_UPDATE_STUDENT,
+          ErrorMessages.ERR_FAILED_TO_DELETE_STUDENT,
         ),
       );
     }
@@ -170,7 +170,7 @@ export const addCourseToStudent = createAsyncThunk(
       return rejectWithValue(
         extractApiErrorMessage(
           error,
-          ErrorMessages.ERR_FAILED_TO_ENROLL_STUDENT,
+          ErrorMessages.ERR_FAILED_TO_ENROLL_COURSE_TO_STUDENT,
         ),
       );
     }

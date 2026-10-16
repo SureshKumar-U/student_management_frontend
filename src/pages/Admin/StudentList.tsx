@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import DeletePopup from "../../components/Popup";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 import { deleteStudent, getAllStudents } from "../../store/slices/studentSlice";
 
 const StudentList = () => {
-  const { students } = useSelector((state: any) => state.students);
+  const { students } = useSelector((state: RootState) => state.students);
   const [showDelete, setShowDelete] = useState(false);
   
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(

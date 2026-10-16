@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
-// import {  getStudentDashboardData } from "../../services/StudentService";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { fetchStudentDashboardDetails } from "../../store/slices/studentSlice";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 
 const Dashboard = () => {
   const auth = useSelector((state: any) => state.auth);
 
   const { dashboardDetails: studentInfo } = useSelector(
-    (state: any) => state.students,
+    (state: RootState) => state.students,
   );
   const dispatch = useAppDispatch();
 
@@ -23,7 +22,7 @@ const Dashboard = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          Welcome, {auth?.user?.name!}!
+          Welcome, {auth?.user?.name!}
         </h1>
 
         <p className="mt-1 text-sm text-gray-500">

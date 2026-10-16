@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAdminDashboardStats, getRecentStudentsApi } from "../../services/AdminService";
+import {
+  getAdminDashboardStats,
+  getRecentStudentsApi,
+} from "../../services/AdminService";
 import { extractApiErrorMessage } from "../../utils/helpers/helperUtils";
-
-
+import * as ErrorMessages from "../../constants/errorConstants";
 
 export interface AdminDashboardStats {
   [key: string]: string | number;
@@ -44,7 +46,10 @@ export const fetchAdminDashboardStats = createAsyncThunk<
     return response.data as AdminDashboardStats;
   } catch (error) {
     return rejectWithValue(
-      extractApiErrorMessage(error, "Failed to load dashboard statistics."),
+      extractApiErrorMessage(
+        error,
+        ErrorMessages.ERR_FAILED_TO_FETCH_ADMIN_DASHBOARD_STATS,
+      ),
     );
   }
 });
@@ -56,10 +61,13 @@ export const fetchRecentStudents = createAsyncThunk<
 >(`${sliceName}/fetchRecentStudents`, async (_, { rejectWithValue }) => {
   try {
     const response = await getRecentStudentsApi();
-    return response.data
+    return response.data;
   } catch (error) {
     return rejectWithValue(
-      extractApiErrorMessage(error, "Failed to fetch recent students."),
+      extractApiErrorMessage(
+        error,
+        ErrorMessages.ERR_FAILED_TO_FETCH_RECENT_STUDENTS,
+      ),
     );
   }
 });
@@ -81,7 +89,9 @@ const adminSlice = createSlice({
       .addCase(fetchAdminDashboardStats.rejected, (state, action) => {
         state.statsStatus = "failed";
         state.statsError =
-          action.payload ?? action.error.message ?? "Unable to load statistics.";
+          action.payload ??
+          action.error.message ??
+          "Unable to load statistics.";
       })
       .addCase(fetchRecentStudents.pending, (state) => {
         state.recentStudentsStatus = "loading";

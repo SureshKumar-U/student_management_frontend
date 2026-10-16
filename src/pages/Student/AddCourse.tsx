@@ -3,14 +3,14 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { fetchAllCourses } from "../../store/slices/courseSlice";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 import { addCourseToStudent } from "../../store/slices/studentSlice";
 
 const AddCourse = () => {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const navigate = useNavigate();
-  const { courses } = useSelector((state: any) => state.courses);
-  const auth = useSelector((state: any) => state.auth);
+  const { courses } = useSelector((state: RootState) => state.courses);
+  const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

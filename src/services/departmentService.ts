@@ -1,7 +1,5 @@
 import { DEPARTMENT_ENDPOINTS } from "../constants/apiConstants";
-import { extractApiErrorMessage } from "../utils/helpers/helperUtils";
 import makeApiRequest from "./MakeApiRequest";
-import * as ErrorMessages from "../constants/errorConstants";
 
 export const getDepartmentListApi = async (): Promise<any> => {
   const response = await makeApiRequest(DEPARTMENT_ENDPOINTS.GET_ALL, {
@@ -11,14 +9,6 @@ export const getDepartmentListApi = async (): Promise<any> => {
     },
   });
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_FETCH_ALL_DEPARTMENTS,
-      ),
-    );
-  }
   return await data;
 };
 
@@ -35,14 +25,6 @@ export const getDepartmentByIdApi = async (
     },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_FETCH_DEPARTMENT,
-      ),
-    );
-  }
   return data;
 };
 
@@ -61,14 +43,6 @@ export const updateDepartmentApi = async (
     },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_UPDATE_DEPARTMENT,
-      ),
-    );
-  }
   return data;
 };
 
@@ -81,14 +55,6 @@ export const createDepartmentApi = async (payload: any): Promise<any> => {
     },
   });
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_CREATE_DEPARTMENT,
-      ),
-    );
-  }
   return data;
 };
 
@@ -105,13 +71,5 @@ export const deleteDepartmentApi = async (
     },
   );
   const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      extractApiErrorMessage(
-        data,
-        ErrorMessages.ERR_FAILED_TO_DELETE_DEPARTMENT,
-      ),
-    );
-  }
   return data;
 };

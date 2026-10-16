@@ -109,7 +109,7 @@ export const updateDepartment = createAsyncThunk(
       return rejectWithValue(
         extractApiErrorMessage(
           error,
-          ErrorMessages.ERR_FAILED_TO_DELETE_DEPARTMENT,
+          ErrorMessages.ERR_FAILED_TO_UPDATE_DEPARTMENT,
         ),
       );
     }
@@ -120,7 +120,7 @@ export const deleteDepartment = createAsyncThunk(
   `${sliceName}/delete`,
   async (id: number, { rejectWithValue }) => {
     try {
-     const res =  await deleteDepartmentApi(id);
+      const res = await deleteDepartmentApi(id);
       return res.message;
     } catch (error) {
       return rejectWithValue(
@@ -158,7 +158,7 @@ const departmentSlice = createSlice({
         state.detailStatus = "loading";
         state.error = null;
       })
-      .addCase(fetchDepartmentById.fulfilled, (state, action) => {
+      .addCase(fetchDepartmentById.fulfilled, (state) => {
         state.detailStatus = "succeeded";
       })
       .addCase(fetchDepartmentById.rejected, (state, action) => {
@@ -172,11 +172,9 @@ const departmentSlice = createSlice({
         state.createStatus = "loading";
         state.error = null;
       })
-      .addCase(createDepartment.fulfilled, (state, action) => {
+      .addCase(createDepartment.fulfilled, (state) => {
         state.createStatus = "succeeded";
-        if (action.payload?.id !== undefined) {
-          state.departments.push(action.payload);
-        }
+        state.error = null;
       })
       .addCase(createDepartment.rejected, (state, action) => {
         state.createStatus = "failed";
@@ -189,14 +187,9 @@ const departmentSlice = createSlice({
         state.updateStatus = "loading";
         state.error = null;
       })
-      .addCase(updateDepartment.fulfilled, (state, action) => {
+      .addCase(updateDepartment.fulfilled, (state) => {
         state.updateStatus = "succeeded";
-        const index = state.departments.findIndex(
-          (department) => department.id === action.payload.id,
-        );
-        if (index !== -1) {
-          state.departments[index] = action.payload;
-        }
+        state.error = null;       
       })
       .addCase(updateDepartment.rejected, (state, action) => {
         state.updateStatus = "failed";
@@ -209,11 +202,9 @@ const departmentSlice = createSlice({
         state.deleteStatus = "loading";
         state.error = null;
       })
-      .addCase(deleteDepartment.fulfilled, (state, action) => {
+      .addCase(deleteDepartment.fulfilled, (state) => {
         state.deleteStatus = "succeeded";
-        state.departments = state.departments.filter(
-          (department) => department.id !== action.payload,
-        );
+        state.error = null
       })
       .addCase(deleteDepartment.rejected, (state, action) => {
         state.deleteStatus = "failed";

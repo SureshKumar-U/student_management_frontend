@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import DeletePopup from "../../components/Popup";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 import {
   deleteDepartment,
   fetchDepartments,
@@ -16,7 +16,7 @@ interface Department {
 }
 
 const DepartmentList = () => {
-  const { departments } = useSelector((state: any) => state.departments);
+  const { departments } = useSelector((state: RootState) => state.departments);
   const [showDelete, setShowDelete] = useState(false);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<
     number | null

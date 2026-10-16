@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch, type RootState } from "../../store/store";
 import { fetchDepartments } from "../../store/slices/departmentSlice";
 import { fetchStudentById, updateStudent } from "../../store/slices/studentSlice";
 
@@ -21,8 +21,8 @@ interface IDepartment {
 
 const UpdateStudentForm = () => {
   const navigate = useNavigate();
-  const { departments } = useSelector((state: any) => state.departments);
-  const { selectedStudent } = useSelector((state: any) => state.students);
+  const { departments } = useSelector((state: RootState) => state.departments);
+  const { selectedStudent } = useSelector((state: RootState) => state.students);
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<IStudentFormData>({
