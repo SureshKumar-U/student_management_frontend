@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { getAllMyCoursesApi } from "../../services/StudentService";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useAppDispatch, type RootState } from "../../store/store";
+import { fetchAllCourses } from "../../store/slices/courseSlice";
+import { fetchMyCourses } from "../../store/slices/studentSlice";
 
 interface Course {
   id: number;
@@ -10,32 +13,18 @@ interface Course {
   department: string;
 }
 
-
 const MyCourses = () => {
-  const auth = useSelector((state: any) => state.auth);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const navigate = useNavigate();
+  const auth = useSelector((state: RootState) => state.auth);
+    const {courses} = useSelector((state: RootState) => state.students);
 
+  const navigate = useNavigate();
+  const dispatch =useAppDispatch();
+  console.log(courses)
   useEffect(() => {
-    // const userId = auth?.user?.id
-    // if(!userId) return
-    
-    getAllMyCoursesApi(auth?.user?.id!).then((res) => {
-      if (res?.data?.length == 0) {
-        return;
-      }
-      const courses = res?.data?.map((c: any) => {
-        const course: Course = {
-          id: c.id,
-          name: c.name,
-          code: c.code,
-          department: c.department.name,
-        };
-        return course;
-      });
-      setCourses(courses);
-    });
-  }, []);
+    const userId  = auth?.user?.id;
+    if(!userId) return;
+    dispatch(fetchMyCourses(userId))
+  }, [auth?.user?.id]);
 
   return (
     <div className="space-y-6">
@@ -49,7 +38,7 @@ const MyCourses = () => {
       </div>
       <button
         onClick={() => navigate("add-course")}
-        className="px-4 py-2 rounded-lg bg-blue-600 text-white
+        className="cursor-pointer px-4 py-2 rounded-lg bg-blue-600 text-white
                      font-medium hover:bg-blue-700 transition"
       >
         + Add Course
@@ -83,7 +72,7 @@ const MyCourses = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-              {courses.map((course) => (
+              {courses.map((course:any) => (
                 <tr key={course.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <span
@@ -91,16 +80,16 @@ const MyCourses = () => {
                                      bg-blue-50 text-blue-700
                                      text-xs font-semibold"
                     >
-                      {course.code}
+                      {course?.code}
                     </span>
                   </td>
 
                   <td className="px-6 py-4 font-medium text-gray-900">
-                    {course.name}
+                    {course?.name}
                   </td>
 
                   <td className="px-6 py-4 text-gray-500">
-                    {course.department}
+                    {course?.department?.name}
                   </td>
                 </tr>
               ))}

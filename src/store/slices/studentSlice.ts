@@ -143,7 +143,7 @@ export const deleteStudent = createAsyncThunk(
 
 export const fetchMyCourses = createAsyncThunk(
   `${sliceName}/fetchMyCourses`,
-  async ({ userId }: { userId: number }, { rejectWithValue }) => {
+  async ( userId: number , { rejectWithValue }) => {
     try {
       const response = await getAllMyCoursesApi(userId);
       return (response.data ?? []) as EnrolledCourse[];

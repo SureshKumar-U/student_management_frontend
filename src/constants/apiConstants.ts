@@ -29,6 +29,7 @@ export const STUDENT_ENDPOINTS = {
   UPDATE: (id: string | number) => `/students/${id}`,
   DELETE: (id: string | number) => `/students/${id}`,
   GET_RECENT_STUDENTS: "/students/recent",
+  GET_STUDENT_COURSES:  (id: string | number) => `/students/courses/${id}`
 };
 
 export const COURSE_ENROLLEMENT = {

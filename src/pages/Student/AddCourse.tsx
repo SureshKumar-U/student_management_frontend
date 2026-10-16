@@ -27,10 +27,8 @@ const AddCourse = () => {
       courseId: selectedCourseId,
       userId: auth?.user?.id,
     };
-
     try {
       const res: any = await dispatch(addCourseToStudent(payload)).unwrap();
-      console.log(res);
       toast.success(res.message);
       navigate("/student/courses");
     } catch (err: any) {
@@ -39,7 +37,7 @@ const AddCourse = () => {
       setSelectedCourseId("");
     }
   };
-
+  
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       {/* Header */}
