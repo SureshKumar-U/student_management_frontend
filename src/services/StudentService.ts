@@ -5,8 +5,15 @@ import {
 } from "../constants/apiConstants";
 import makeApiRequest from "./MakeApiRequest";
 
-export const getAllStudentsApi = async (): Promise<any> => {
-  const response = await makeApiRequest(STUDENT_ENDPOINTS.GET_ALL, {
+export const getAllStudentsApi = async (
+  pageNo: number,
+  pageSize: number,
+): Promise<any> => {
+  const queryParams = new URLSearchParams({
+    pageNo: String(pageNo),
+    pageSize: String(pageSize),
+  });
+  const response = await makeApiRequest(`${STUDENT_ENDPOINTS.GET_ALL}?${queryParams}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -68,13 +75,24 @@ export const addCourseToStudentApi = async (payload: any): Promise<any> => {
   return data;
 };
 
-export const getAllMyCoursesApi = async (userId: number): Promise<any> => {
-  const response = await makeApiRequest(`/students/courses/${userId}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+export const getAllMyCoursesApi = async (
+  userId: number,
+  pageNo: number,
+  pageSize: number,
+): Promise<any> => {
+  const queryParams = new URLSearchParams({
+    pageNo: String(pageNo),
+    pageSize: String(pageSize),
   });
+  const response = await makeApiRequest(
+    `${STUDENT_ENDPOINTS.GET_STUDENT_COURSES(userId)}?${queryParams}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
   const data = await response.json();
   return data;
 };

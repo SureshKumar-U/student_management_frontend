@@ -10,7 +10,6 @@ const Dashboard = () => {
     (state: RootState) => state.students,
   );
   const dispatch = useAppDispatch();
-
   useEffect(() => {
     const userId = auth?.user?.id;
     if (!userId) return;

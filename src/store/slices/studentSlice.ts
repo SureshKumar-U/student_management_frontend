@@ -143,9 +143,16 @@ export const deleteStudent = createAsyncThunk(
 
 export const fetchMyCourses = createAsyncThunk(
   `${sliceName}/fetchMyCourses`,
-  async ( userId: number , { rejectWithValue }) => {
+  async (
+    {
+      userId,
+      pageNo,
+      pageSize,
+    }: { userId: number; pageNo: number; pageSize: number },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await getAllMyCoursesApi(userId);
+      const response = await getAllMyCoursesApi(userId, pageNo, pageSize);
       return (response.data ?? []) as EnrolledCourse[];
     } catch (error) {
       return rejectWithValue(
@@ -179,9 +186,15 @@ export const addCourseToStudent = createAsyncThunk(
 
 export const getAllStudents = createAsyncThunk(
   `${sliceName}/fetchAll`,
-  async (_, { rejectWithValue }) => {
+  async (
+    {
+      pageNo,
+      pageSize,
+    }: { pageNo: number; pageSize: number },
+    { rejectWithValue },
+  ) => {
     try {
-      const response = await getAllStudentsApi();
+      const response = await getAllStudentsApi(pageNo,pageSize);
       return response.data as Student[];
     } catch (error) {
       return rejectWithValue(

@@ -6,20 +6,25 @@ import { useSelector } from "react-redux";
 import { useAppDispatch, type RootState } from "../../store/store";
 import { deleteStudent, getAllStudents } from "../../store/slices/studentSlice";
 
+const DEFAULT_PAGE_SIZE = 10;
+
 const StudentList = () => {
   const { students } = useSelector((state: RootState) => state.students);
   const [showDelete, setShowDelete] = useState(false);
-  
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const auth = useSelector((state: RootState) => state.auth);
   const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
     null,
   );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getAllStudents());
-  }, []);
+    const userId = auth?.user?.id;
+    if (!userId) return;
+    dispatch(getAllStudents({  pageNo, pageSize }));
+  }, [auth?.user?.id, dispatch, pageNo, pageSize]);
 
-  console.log(students)
 
   const handleDelete = async () => {
     try {
@@ -27,7 +32,7 @@ const StudentList = () => {
         deleteStudent(selectedStudentId!),
       ).unwrap();
       toast.success(res);
-      dispatch(getAllStudents());
+      dispatch(getAllStudents({pageNo, pageSize}));
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -113,6 +118,44 @@ const StudentList = () => {
               ))}
             </tbody>
           </table>
+        </div>
+              <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            Page size
+            <select
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(Number(event.target.value));
+                setPageNo(1);
+              }}
+              className="rounded-md border border-gray-300 px-2 py-1"
+            >
+              {[5, 10, 20].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setPageNo((currentPage) => currentPage - 1)}
+              disabled={pageNo === 1}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">Page {pageNo}</span>
+            <button
+              type="button"
+              onClick={() => setPageNo((currentPage) => currentPage + 1)}
+              disabled={students.length < pageSize}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
         <DeletePopup
           open={showDelete}

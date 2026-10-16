@@ -1,30 +1,26 @@
 import { useEffect, useState } from "react";
-import { getAllMyCoursesApi } from "../../services/StudentService";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useAppDispatch, type RootState } from "../../store/store";
-import { fetchAllCourses } from "../../store/slices/courseSlice";
 import { fetchMyCourses } from "../../store/slices/studentSlice";
 
-interface Course {
-  id: number;
-  code: string;
-  name: string;
-  department: string;
-}
+const DEFAULT_PAGE_SIZE = 10;
 
 const MyCourses = () => {
   const auth = useSelector((state: RootState) => state.auth);
-    const {courses} = useSelector((state: RootState) => state.students);
-
+  const { courses } = useSelector((state: RootState) => state.students);
   const navigate = useNavigate();
-  const dispatch =useAppDispatch();
-  console.log(courses)
+  const dispatch = useAppDispatch();
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+
   useEffect(() => {
-    const userId  = auth?.user?.id;
-    if(!userId) return;
-    dispatch(fetchMyCourses(userId))
-  }, [auth?.user?.id]);
+    const userId = auth?.user?.id;
+    if (!userId) return;
+
+    dispatch(fetchMyCourses({ userId, pageNo, pageSize }));
+  }, [auth?.user?.id, dispatch, pageNo, pageSize]);
 
   return (
     <div className="space-y-6">
@@ -46,7 +42,7 @@ const MyCourses = () => {
 
       {/* Course count */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <p className="text-sm text-gray-500">Total Courses</p>
+        <p className="text-sm text-gray-500">Courses on this page</p>
 
         <p className="mt-1 text-3xl font-bold text-gray-900">
           {courses.length}
@@ -72,6 +68,13 @@ const MyCourses = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-100">
+              {!courses.length && (
+                <tr>
+                  <td colSpan={3} className="py-4 text-center text-gray-500">
+                    No enrolled courses on this page
+                  </td>
+                </tr>
+              )}
               {courses.map((course:any) => (
                 <tr key={course.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
@@ -95,6 +98,44 @@ const MyCourses = () => {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="flex items-center justify-between border-t border-gray-100 px-6 py-4">
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            Page size
+            <select
+              value={pageSize}
+              onChange={(event) => {
+                setPageSize(Number(event.target.value));
+                setPageNo(1);
+              }}
+              className="rounded-md border border-gray-300 px-2 py-1"
+            >
+              {[5, 10, 20].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setPageNo((currentPage) => currentPage - 1)}
+              disabled={pageNo === 1}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">Page {pageNo}</span>
+            <button
+              type="button"
+              onClick={() => setPageNo((currentPage) => currentPage + 1)}
+              disabled={courses.length < pageSize}
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </div>
